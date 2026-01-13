@@ -26,7 +26,7 @@ interface FacilityHoverData {
  */
 export const InventoryMap = React.forwardRef<HTMLDivElement, InventoryMapProps>(
   ({ className }, ref) => {
-    const [zoomLevel, setZoomLevel] = useState(1.2);
+    const [zoomLevel, setZoomLevel] = useState(1.0);
     const [hoveredFacility, setHoveredFacility] = useState<FacilityHoverData | null>(null);
     const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
 
@@ -70,7 +70,7 @@ export const InventoryMap = React.forwardRef<HTMLDivElement, InventoryMapProps>(
     };
 
     const handleResetView = () => {
-      setZoomLevel(1.2);
+      setZoomLevel(1.0);
       setPanOffset({ x: 0, y: 0 });
     };
 
