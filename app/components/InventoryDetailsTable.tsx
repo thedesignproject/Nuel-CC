@@ -234,7 +234,7 @@ export const InventoryDetailsTable = React.forwardRef<HTMLDivElement, InventoryD
         >
           <table
             style={{
-              width: '1182px', // Fixed width from Figma
+              width: '100%',
               minWidth: '1182px',
               borderCollapse: 'collapse',
             }}

@@ -328,7 +328,7 @@ export const UntappedPotentialTable = React.forwardRef<HTMLDivElement, UntappedP
         >
           <table
             style={{
-              width: '1650px',
+              width: '100%',
               minWidth: '1650px',
               borderCollapse: 'collapse',
             }}
