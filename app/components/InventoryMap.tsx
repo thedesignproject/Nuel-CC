@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { SectionHeader } from './SectionHeader';
 import { Dropdown } from './Dropdown';
 import { MapPin, Plus, Minus, ArrowsOut, Crosshair } from '@phosphor-icons/react';
@@ -26,9 +26,15 @@ interface FacilityHoverData {
  */
 export const InventoryMap = React.forwardRef<HTMLDivElement, InventoryMapProps>(
   ({ className }, ref) => {
-    const [zoomLevel, setZoomLevel] = useState(1);
+    const [zoomLevel, setZoomLevel] = useState(1.2);
     const [hoveredFacility, setHoveredFacility] = useState<FacilityHoverData | null>(null);
     const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
+
+    // Pan state
+    const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+    const [isDragging, setIsDragging] = useState(false);
+    const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+    const mapContainerRef = useRef<HTMLDivElement>(null);
 
     // Dropdown states
     const [selectedMaterial, setSelectedMaterial] = useState('All materials');
@@ -48,23 +54,127 @@ export const InventoryMap = React.forwardRef<HTMLDivElement, InventoryMapProps>(
     ];
 
     const handleZoomIn = () => {
-      setZoomLevel((prev) => Math.min(prev + 0.2, 2));
+      setZoomLevel((prev) => {
+        const newZoom = Math.min(prev + 0.2, 3);
+        setPanOffset((offset) => constrainPanOffset(offset, newZoom));
+        return newZoom;
+      });
     };
 
     const handleZoomOut = () => {
-      setZoomLevel((prev) => Math.max(prev - 0.2, 0.5));
+      setZoomLevel((prev) => {
+        const newZoom = Math.max(prev - 0.2, 1.0);
+        setPanOffset((offset) => constrainPanOffset(offset, newZoom));
+        return newZoom;
+      });
+    };
+
+    const handleResetView = () => {
+      setZoomLevel(1.2);
+      setPanOffset({ x: 0, y: 0 });
+    };
+
+    // Mouse wheel zoom
+    const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      const delta = e.deltaY * -0.001;
+      setZoomLevel((prev) => {
+        const newZoom = Math.min(Math.max(prev + delta, 1.0), 3);
+        setPanOffset((offset) => constrainPanOffset(offset, newZoom));
+        return newZoom;
+      });
+    };
+
+    // Calculate pan boundaries based on zoom level
+    const getPanBoundaries = (zoom: number) => {
+      if (!mapContainerRef.current) return { maxX: 0, maxY: 0, minX: 0, minY: 0 };
+
+      const container = mapContainerRef.current;
+      const containerWidth = container.clientWidth;
+      const containerHeight = container.clientHeight;
+
+      // The image wrapper is 150% of container size
+      const imageWrapperScale = 1.5;
+
+      // Calculate how much the image extends beyond the container at current zoom
+      const scaledWidth = containerWidth * imageWrapperScale * zoom;
+      const scaledHeight = containerHeight * imageWrapperScale * zoom;
+
+      const excessWidth = (scaledWidth - containerWidth) / 2;
+      const excessHeight = (scaledHeight - containerHeight) / 2;
+
+      // Maximum pan distance is the excess on each side
+      return {
+        maxX: excessWidth,
+        maxY: excessHeight,
+        minX: -excessWidth,
+        minY: -excessHeight,
+      };
+    };
+
+    // Constrain pan offset within boundaries
+    const constrainPanOffset = (offset: { x: number; y: number }, zoom: number) => {
+      const bounds = getPanBoundaries(zoom);
+      return {
+        x: Math.max(bounds.minX, Math.min(bounds.maxX, offset.x)),
+        y: Math.max(bounds.minY, Math.min(bounds.maxY, offset.y)),
+      };
+    };
+
+    // Pan handlers
+    const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+      if (e.button === 0) { // Left click only
+        setIsDragging(true);
+        setDragStart({
+          x: e.clientX - panOffset.x,
+          y: e.clientY - panOffset.y
+        });
+      }
+    };
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+      if (isDragging) {
+        const newOffset = {
+          x: e.clientX - dragStart.x,
+          y: e.clientY - dragStart.y,
+        };
+        const constrainedOffset = constrainPanOffset(newOffset, zoomLevel);
+        setPanOffset(constrainedOffset);
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    const handleMouseLeave = () => {
+      setIsDragging(false);
+      setHoveredFacility(null);
     };
 
     const handleMapHover = (event: React.MouseEvent<HTMLDivElement>) => {
-      // Example: Show hover popup (you can add logic to detect facility markers)
+      if (isDragging) return; // Don't show hover while dragging
+
       const rect = event.currentTarget.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
 
-      // Mock data - in real implementation, detect which facility is being hovered
-      if (x > 100 && x < 300 && y > 50 && y < 150) {
+      // Calculate center region bounds (40% of container in center)
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const centerWidth = rect.width * 0.4;
+      const centerHeight = rect.height * 0.4;
+
+      const inCenterRegion =
+        x > centerX - centerWidth / 2 &&
+        x < centerX + centerWidth / 2 &&
+        y > centerY - centerHeight / 2 &&
+        y < centerY + centerHeight / 2;
+
+      // Show hover info when in center region
+      if (inCenterRegion) {
         setHoveredFacility({
-          name: 'Lake Opal Plant',
+          name: 'Central Region',
           type: 'Plant',
           capacity: 27400,
           current: 10761,
@@ -348,6 +458,7 @@ export const InventoryMap = React.forwardRef<HTMLDivElement, InventoryMapProps>(
 
         {/* Map Container */}
         <div
+          ref={mapContainerRef}
           style={{
             position: 'relative',
             flex: '1 0 0',
@@ -356,21 +467,59 @@ export const InventoryMap = React.forwardRef<HTMLDivElement, InventoryMapProps>(
             width: '100%',
             borderRadius: '16px',
             overflow: 'hidden',
-            opacity: 0.88,
+            cursor: isDragging ? 'grabbing' : 'grab',
           }}
-          onMouseMove={handleMapHover}
-          onMouseLeave={() => setHoveredFacility(null)}
+          onMouseDown={handleMouseDown}
+          onMouseMove={(e) => {
+            handleMouseMove(e);
+            handleMapHover(e);
+          }}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseLeave}
+          onWheel={handleWheel}
         >
-          {/* Map Image */}
-          <img
-            src="/map.png"
-            alt="Inventory Map"
+          {/* Map Image Wrapper */}
+          <div
             style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              objectPosition: 'center',
-              borderRadius: '16px',
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              width: '150%',
+              height: '150%',
+              transform: `translate(-50%, -50%) scale(${zoomLevel}) translate(${panOffset.x / zoomLevel}px, ${panOffset.y / zoomLevel}px)`,
+              transformOrigin: 'center center',
+              transition: isDragging ? 'none' : 'transform 0.2s ease-out',
+            }}
+          >
+            <img
+              src="/interactive-map.png"
+              alt="Inventory Map"
+              draggable={false}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center',
+                userSelect: 'none',
+                display: 'block',
+              }}
+            />
+          </div>
+
+          {/* Hover overlay for center region */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: '40%',
+              height: '40%',
+              pointerEvents: 'none',
+              transition: 'opacity 0.2s ease',
+              opacity: hoveredFacility ? 0.1 : 0,
+              backgroundColor: '#1C58F7',
+              borderRadius: '12px',
             }}
           />
 
@@ -415,7 +564,7 @@ export const InventoryMap = React.forwardRef<HTMLDivElement, InventoryMapProps>(
 
             {/* Center Button */}
             <button
-              onClick={() => console.log('Center map')}
+              onClick={handleResetView}
               style={{
                 backgroundColor: 'white',
                 boxShadow: '0px 2px 6px 2px rgba(0, 0, 0, 0.06)',

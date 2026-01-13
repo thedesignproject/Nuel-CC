@@ -27,16 +27,16 @@ export default function SettingsPage() {
   const { logout } = useAuth();
 
   // Company Information form state
-  const [companyName, setCompanyName] = useState('Tessendro Kerley inc');
+  const [companyName, setCompanyName] = useState('Acme Corporation');
   const [industry, setIndustry] = useState('Fertilizers & Agriculture');
   const [phoneNumber, setPhoneNumber] = useState('+1 (555) 123-4567');
-  const [website, setWebsite] = useState('https://tessenderlo.com');
+  const [website, setWebsite] = useState('https://example.com');
   const [address, setAddress] = useState('2255 N. Dobson Rd, Suite 105, Chandler, AZ 85224');
 
   // Profile Settings form state
   const [firstName, setFirstName] = useState('John');
   const [lastName, setLastName] = useState('Doe');
-  const [email, setEmail] = useState('john.doe@tessenderlo.com');
+  const [email, setEmail] = useState('john.doe@example.com');
   const [role] = useState('Executive manager');
 
   // Security & Access form state
