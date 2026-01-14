@@ -145,10 +145,10 @@ const TypeTag = ({ type }: { type: 'Terminal' | 'Plant' }) => {
       </div>
       <p
         style={{
-          fontFamily: TYPOGRAPHY.bodyExtraSmallText.fontFamily,
-          fontSize: TYPOGRAPHY.bodyExtraSmallText.fontSize,
-          lineHeight: TYPOGRAPHY.bodyExtraSmallText.lineHeight,
-          fontWeight: TYPOGRAPHY.bodyExtraSmallText.fontWeight,
+          fontFamily: TYPOGRAPHY.bodySmallMedium.fontFamily,
+          fontSize: TYPOGRAPHY.bodySmallMedium.fontSize,
+          lineHeight: TYPOGRAPHY.bodySmallMedium.lineHeight,
+          fontWeight: TYPOGRAPHY.bodySmallMedium.fontWeight,
           color: color,
           margin: 0,
         }}
@@ -197,10 +197,10 @@ const ProgressBar = ({ percentage }: { percentage: number }) => {
       {/* Percentage text */}
       <p
         style={{
-          fontFamily: TYPOGRAPHY.bodyExtraSmallText.fontFamily,
-          fontSize: TYPOGRAPHY.bodyExtraSmallText.fontSize,
-          lineHeight: TYPOGRAPHY.bodyExtraSmallText.lineHeight,
-          fontWeight: TYPOGRAPHY.bodyExtraSmallText.fontWeight,
+          fontFamily: TYPOGRAPHY.bodySmallMedium.fontFamily,
+          fontSize: TYPOGRAPHY.bodySmallMedium.fontSize,
+          lineHeight: TYPOGRAPHY.bodySmallMedium.lineHeight,
+          fontWeight: TYPOGRAPHY.bodySmallMedium.fontWeight,
           color: COLORS.text.primary,
           margin: 0,
           width: '40px',
@@ -240,10 +240,10 @@ const StatusPill = ({ status }: { status: 'Needs improvement' | 'Focus Area' }) 
       />
       <p
         style={{
-          fontFamily: TYPOGRAPHY.bodyExtraSmallText.fontFamily,
-          fontSize: TYPOGRAPHY.bodyExtraSmallText.fontSize,
-          lineHeight: TYPOGRAPHY.bodyExtraSmallText.lineHeight,
-          fontWeight: TYPOGRAPHY.bodyExtraSmallText.fontWeight,
+          fontFamily: TYPOGRAPHY.bodySmallMedium.fontFamily,
+          fontSize: TYPOGRAPHY.bodySmallMedium.fontSize,
+          lineHeight: TYPOGRAPHY.bodySmallMedium.lineHeight,
+          fontWeight: TYPOGRAPHY.bodySmallMedium.fontWeight,
           color: COLORS.text.primary,
           margin: 0,
           whiteSpace: 'nowrap',
@@ -470,10 +470,10 @@ export const HistoricalPerformanceTable = React.forwardRef<
               <MapPin size={14} strokeWidth={1.5} style={{ color: COLORS.text.primary }} />
               <p
                 style={{
-                  fontFamily: TYPOGRAPHY.bodyExtraSmallText.fontFamily,
-                  fontSize: TYPOGRAPHY.bodyExtraSmallText.fontSize,
-                  lineHeight: TYPOGRAPHY.bodyExtraSmallText.lineHeight,
-                  fontWeight: TYPOGRAPHY.bodyExtraSmallText.fontWeight,
+                  fontFamily: TYPOGRAPHY.bodySmallMedium.fontFamily,
+                  fontSize: TYPOGRAPHY.bodySmallMedium.fontSize,
+                  lineHeight: TYPOGRAPHY.bodySmallMedium.lineHeight,
+                  fontWeight: TYPOGRAPHY.bodySmallMedium.fontWeight,
                   color: COLORS.text.primary,
                   margin: 0,
                 }}
@@ -518,10 +518,10 @@ export const HistoricalPerformanceTable = React.forwardRef<
               <Crosshair size={14} strokeWidth={1.5} style={{ color: COLORS.text.primary }} />
               <p
                 style={{
-                  fontFamily: TYPOGRAPHY.bodyExtraSmallText.fontFamily,
-                  fontSize: TYPOGRAPHY.bodyExtraSmallText.fontSize,
-                  lineHeight: TYPOGRAPHY.bodyExtraSmallText.lineHeight,
-                  fontWeight: TYPOGRAPHY.bodyExtraSmallText.fontWeight,
+                  fontFamily: TYPOGRAPHY.bodySmallMedium.fontFamily,
+                  fontSize: TYPOGRAPHY.bodySmallMedium.fontSize,
+                  lineHeight: TYPOGRAPHY.bodySmallMedium.lineHeight,
+                  fontWeight: TYPOGRAPHY.bodySmallMedium.fontWeight,
                   color: COLORS.text.primary,
                   margin: 0,
                 }}
@@ -580,10 +580,10 @@ export const HistoricalPerformanceTable = React.forwardRef<
               )}
               <p
                 style={{
-                  fontFamily: TYPOGRAPHY.bodyExtraSmallText.fontFamily,
-                  fontSize: TYPOGRAPHY.bodyExtraSmallText.fontSize,
-                  lineHeight: TYPOGRAPHY.bodyExtraSmallText.lineHeight,
-                  fontWeight: TYPOGRAPHY.bodyExtraSmallText.fontWeight,
+                  fontFamily: TYPOGRAPHY.bodySmallMedium.fontFamily,
+                  fontSize: TYPOGRAPHY.bodySmallMedium.fontSize,
+                  lineHeight: TYPOGRAPHY.bodySmallMedium.lineHeight,
+                  fontWeight: TYPOGRAPHY.bodySmallMedium.fontWeight,
                   color: COLORS.text.primary,
                   margin: 0,
                   overflow: 'hidden',

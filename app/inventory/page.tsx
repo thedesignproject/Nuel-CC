@@ -5,7 +5,7 @@ import { TopBar } from '../components/TopBar';
 import { Sidebar } from '../components/Sidebar';
 import { NotificationsPanel } from '../components/NotificationsPanel';
 import { InventoryAlerts } from '../components/InventoryAlerts';
-import { InventoryMap } from '../components/InventoryMap';
+import { InteractiveInventoryMapWrapper } from '../components/InteractiveInventoryMapWrapper';
 import { RegionalTargets } from '../components/RegionalTargets';
 import { InventoryDetailsTable } from '../components/InventoryDetailsTable';
 import { useAuth } from '../context/AuthContext';
@@ -72,7 +72,7 @@ export default function InventoryPage() {
                 }}
               >
                 <InventoryAlerts />
-                <InventoryMap />
+                <InteractiveInventoryMapWrapper />
               </div>
 
               {/* Regional Targets Section */}

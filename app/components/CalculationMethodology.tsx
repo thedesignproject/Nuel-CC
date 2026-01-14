@@ -289,7 +289,7 @@ export const CalculationMethodology = React.forwardRef<
       ref={ref}
       className={className}
       style={{
-        width: '696px',
+        flex: 1,
         backgroundColor: '#F3F6F9',
         borderRadius: '24px',
         padding: SPACING[24],

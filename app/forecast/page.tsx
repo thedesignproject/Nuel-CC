@@ -3,8 +3,7 @@
 import { useState } from 'react';
 import { TopBar } from '../components/TopBar';
 import { Sidebar } from '../components/Sidebar';
-import { NotificationsPanel } from '../components/NotificationsPanel';
-import { CompactAlertBanner } from '../components/CompactAlertBanner';
+import { ActivityAlertWidget } from '../components/ActivityAlertWidget';
 import { Tabs, Tab} from '../components/Tabs';
 import { ForecastChart } from '../components/ForecastChart';
 import { ForecastMetricCard } from '../components/ForecastMetricCard';
@@ -27,7 +26,6 @@ import { LAYOUT_SPACING, COLORS, TYPOGRAPHY, SPACING } from '../design-tokens';
 import { calculateSimulationResults, SimulationResults } from '../utils/sandboxCalculations';
 
 export default function ForecastPage() {
-  const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] = useState(false);
   const [activeTabId, setActiveTabId] = useState('forecast-vs-actuals');
   const [isSandboxMode, setIsSandboxMode] = useState(false);
   const [showSandboxModal, setShowSandboxModal] = useState(false);
@@ -101,7 +99,6 @@ export default function ForecastPage() {
             mode="executive"
             variant="expanded"
             activeItem="forecast"
-            onNotificationsClick={() => setIsNotificationsPanelOpen(true)}
             onLogout={logout}
           />
         </div>
@@ -131,6 +128,8 @@ export default function ForecastPage() {
 
             {/* Forecast Content */}
             <div className="flex flex-col gap-[24px]">
+              {/* Activity Alert Widget */}
+              <ActivityAlertWidget />
               {/* Tabs and Chart Section */}
               <FadeInSection delay={0}>
                 <div
@@ -743,15 +742,6 @@ export default function ForecastPage() {
           </div>
         </div>
       </div>
-
-      {/* Notifications Panel */}
-      <NotificationsPanel
-        isOpen={isNotificationsPanelOpen}
-        onClose={() => setIsNotificationsPanelOpen(false)}
-      />
-
-      {/* Compact Alert Banner */}
-      <CompactAlertBanner />
 
       {/* Sandbox Configuration Modal */}
       <SandboxConfigModal

@@ -156,15 +156,17 @@ export const ProgressBar = React.forwardRef<HTMLDivElement, ProgressBarProps>(
             </div>
           )}
 
-          {/* Name */}
-          <div style={{ minWidth: isXL ? '100px' : '80px', flexShrink: 0 }}>
-            <p style={{ fontSize: isXL ? '14px' : '12px', lineHeight: isXL ? '22px' : '20px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
-              {name}
-            </p>
-          </div>
+          {/* Name - only show if not empty */}
+          {name && (
+            <div style={{ minWidth: isXL ? '100px' : '80px', flexShrink: 0 }}>
+              <p style={{ fontSize: isXL ? '14px' : '12px', lineHeight: isXL ? '22px' : '20px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
+                {name}
+              </p>
+            </div>
+          )}
 
           {/* Current Value */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
             <p style={{ fontSize: '12px', lineHeight: '20px', fontWeight: 400, color: '#7F8FA4', fontFamily: 'DM Sans' }}>
               Current:
             </p>

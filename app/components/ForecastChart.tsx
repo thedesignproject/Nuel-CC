@@ -425,7 +425,7 @@ export const ForecastChart = React.forwardRef<HTMLDivElement, ForecastChartProps
             {/* X-Axis */}
             <XAxis
               dataKey="date"
-              axisLine={false}
+              axisLine={{ stroke: '#D9E0E9', strokeWidth: 1 }}
               tickLine={false}
               tick={<CustomXAxisTick />}
               height={50}
@@ -470,16 +470,16 @@ export const ForecastChart = React.forwardRef<HTMLDivElement, ForecastChartProps
               />
             )}
 
-            {/* Stacked Bars - Orders Shipped (Past) */}
+            {/* Stacked Bars - Orders Shipped (Past) - Bottom of stack, no rounding */}
             <Bar
               dataKey="ordersShipped"
               stackId="a"
               fill="#9EADCC"
-              radius={[4, 4, 0, 0]}
+              radius={[0, 0, 0, 0]}
               maxBarSize={16}
             />
 
-            {/* Stacked Bars - Unshipped Gap */}
+            {/* Stacked Bars - Unshipped Gap - Top of past stack, rounded corners */}
             <Bar
               dataKey="unshippedGap"
               stackId="a"
@@ -488,7 +488,7 @@ export const ForecastChart = React.forwardRef<HTMLDivElement, ForecastChartProps
               maxBarSize={16}
             />
 
-            {/* Stacked Bars - New Orders (Future) */}
+            {/* Stacked Bars - New Orders (Future) - Standalone, rounded corners */}
             <Bar
               dataKey="newOrders"
               stackId="a"

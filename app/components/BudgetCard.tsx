@@ -141,7 +141,7 @@ export const BudgetCard = React.forwardRef<HTMLDivElement, BudgetCardProps>(
         className={className}
         style={{
           position: 'relative',
-          width: '356px',
+          flex: 1,
           backgroundColor: '#f3f6f9',
           borderRadius: CARD_CURVATURE,
           padding: SPACING[16],

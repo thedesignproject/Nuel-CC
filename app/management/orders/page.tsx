@@ -7,7 +7,6 @@ import { SectionHeader } from '../../components/SectionHeader';
 import { Button } from '../../components/Button';
 import { StatusPill } from '../../components/StatusPill';
 import { NotificationsPanel } from '../../components/NotificationsPanel';
-import { CompactAlertBanner } from '../../components/CompactAlertBanner';
 import { useAuth } from '../../context/AuthContext';
 import { LAYOUT_SPACING, TYPOGRAPHY, COLORS, BORDER_RADIUS } from '../../design-tokens';
 import { neutral, primary, gradients } from '../../../lib/design-tokens/colors';
@@ -347,7 +346,7 @@ export default function ManagementOrdersPage() {
                 }}
               >
                 {/* Section Header */}
-                <SectionHeader icon="list" title="Orders" />
+                <SectionHeader level="primary" icon="list" title="Orders" />
 
                 {/* Search and Filter Row */}
                 <div
@@ -429,7 +428,7 @@ export default function ManagementOrdersPage() {
                 >
                   <table
                     style={{
-                      width: '2132px',
+                      width: '100%',
                       minWidth: '2132px',
                       borderCollapse: 'collapse',
                       backgroundColor: neutral[0],
@@ -627,9 +626,6 @@ export default function ManagementOrdersPage() {
 
       {/* Notifications Panel */}
       <NotificationsPanel isOpen={isNotificationsPanelOpen} onClose={() => setIsNotificationsPanelOpen(false)} />
-
-      {/* Compact Alert Banner */}
-      <CompactAlertBanner />
 
       {/* Custom Scrollbar Styling */}
       <style jsx global>{`

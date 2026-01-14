@@ -44,7 +44,7 @@ export const TargetComponentsCard = React.forwardRef<
       ref={ref}
       className={className}
       style={{
-        width: '420px',
+        width: '100%',
         backgroundColor: '#f3f6f9',
         borderRadius: CARD_CURVATURE,
         padding: SPACING[16],

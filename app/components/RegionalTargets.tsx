@@ -6,7 +6,7 @@ import { ProgressBar } from './ProgressBar';
 import { Modal } from './Modal';
 import { Input } from './Input';
 import { Button } from './Button';
-import { ChartLine, CaretDown, CaretUp, Factory, Cube, GearSix } from '@phosphor-icons/react';
+import { ChartLine, Factory, Cube, GearSix } from '@phosphor-icons/react';
 import { warning } from '../../lib/design-tokens/colors';
 
 export interface RegionalTargetsProps {
@@ -23,21 +23,10 @@ type TabType = 'facility' | 'material';
 export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsProps>(
   ({ className }, ref) => {
     const [activeTab, setActiveTab] = useState<TabType>('facility');
-    const [expandedFacilities, setExpandedFacilities] = useState<Set<string>>(new Set(['Lake Opal Terminal']));
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedMaterial, setSelectedMaterial] = useState<{ name: string; current: number; target: number; capacity: number } | null>(null);
     const [targetValue, setTargetValue] = useState('');
     const [reasonValue, setReasonValue] = useState('');
-
-    const toggleFacility = (facility: string) => {
-      const newExpanded = new Set(expandedFacilities);
-      if (newExpanded.has(facility)) {
-        newExpanded.delete(facility);
-      } else {
-        newExpanded.add(facility);
-      }
-      setExpandedFacilities(newExpanded);
-    };
 
     const handleSettingsClick = (name: string, current: number, target: number, capacity: number) => {
       setSelectedMaterial({ name, current, target, capacity });
@@ -182,23 +171,6 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* Facility Header */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <button
-                    onClick={() => toggleFacility('Lake Opal Terminal')}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      padding: 0,
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    {expandedFacilities.has('Lake Opal Terminal') ? (
-                      <CaretUp size={16} weight="bold" color="#7F8FA4" />
-                    ) : (
-                      <CaretDown size={16} weight="bold" color="#7F8FA4" />
-                    )}
-                  </button>
                   <Factory size={20} weight="regular" color="#1C58F7" />
                   <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
                     Lake Opal Terminal
@@ -214,103 +186,61 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
                       2 Alerts
                     </p>
                   </div>
-
-                  {/* See Less Link */}
-                  <button
-                    onClick={() => toggleFacility('Lake Opal Terminal')}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      padding: '4px 8px',
-                    }}
-                  >
-                    <p style={{ fontSize: '12px', lineHeight: '20px', fontWeight: 500, color: '#1C58F7', fontFamily: 'DM Sans' }}>
-                      {expandedFacilities.has('Lake Opal Terminal') ? 'See Less' : 'See more'}
-                    </p>
-                    {expandedFacilities.has('Lake Opal Terminal') ? (
-                      <CaretUp size={12} weight="bold" color="#1C58F7" />
-                    ) : (
-                      <CaretDown size={12} weight="bold" color="#1C58F7" />
-                    )}
-                  </button>
                 </div>
 
                 {/* Material Progress Bars (XL) */}
-                {expandedFacilities.has('Lake Opal Terminal') && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', paddingLeft: '28px' }}>
-                    <ProgressBar
-                      size="xl"
-                      name="KTS"
-                      icon={materialIcons.KTS}
-                      current={13487}
-                      target={18383}
-                      capacity={25207}
-                      percentage={47}
-                      status="critical"
-                      onSettingsClick={() => handleSettingsClick('KTS', 13487, 18383, 25207)}
-                    />
-                    <ProgressBar
-                      size="xl"
-                      name="KMS"
-                      icon={materialIcons.KMS}
-                      current={16829}
-                      target={16481}
-                      capacity={23063}
-                      percentage={68}
-                      status="warning"
-                      onSettingsClick={() => handleSettingsClick('KMS', 16829, 16481, 23063)}
-                    />
-                    <ProgressBar
-                      size="xl"
-                      name="Thio-Sul"
-                      icon={materialIcons['Thio-Sul']}
-                      current={25673}
-                      target={26127}
-                      capacity={29628}
-                      percentage={83}
-                      status="good"
-                      onSettingsClick={() => handleSettingsClick('Thio-Sul', 25673, 26127, 29628)}
-                    />
-                    <ProgressBar
-                      size="xl"
-                      name="CropMax"
-                      icon={materialIcons.CropMax}
-                      current={0}
-                      target={0}
-                      capacity={0}
-                      status="warning"
-                      warningMessage="No data available for this material/facility"
-                      onSettingsClick={() => handleSettingsClick('CropMax', 0, 0, 0)}
-                    />
-                  </div>
-                )}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', paddingLeft: '28px' }}>
+                  <ProgressBar
+                    size="xl"
+                    name="KTS"
+                    icon={materialIcons.KTS}
+                    current={13487}
+                    target={18383}
+                    capacity={25207}
+                    percentage={47}
+                    status="critical"
+                    onSettingsClick={() => handleSettingsClick('KTS', 13487, 18383, 25207)}
+                  />
+                  <ProgressBar
+                    size="xl"
+                    name="KMS"
+                    icon={materialIcons.KMS}
+                    current={16829}
+                    target={16481}
+                    capacity={23063}
+                    percentage={68}
+                    status="warning"
+                    onSettingsClick={() => handleSettingsClick('KMS', 16829, 16481, 23063)}
+                  />
+                  <ProgressBar
+                    size="xl"
+                    name="Thio-Sul"
+                    icon={materialIcons['Thio-Sul']}
+                    current={25673}
+                    target={26127}
+                    capacity={29628}
+                    percentage={83}
+                    status="good"
+                    onSettingsClick={() => handleSettingsClick('Thio-Sul', 25673, 26127, 29628)}
+                  />
+                  <ProgressBar
+                    size="xl"
+                    name="CropMax"
+                    icon={materialIcons.CropMax}
+                    current={0}
+                    target={0}
+                    capacity={0}
+                    status="warning"
+                    warningMessage="No data available for this material/facility"
+                    onSettingsClick={() => handleSettingsClick('CropMax', 0, 0, 0)}
+                  />
+                </div>
               </div>
 
               {/* Lake Opal Plant */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* Facility Header with "All clear" badge */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <button
-                    onClick={() => toggleFacility('Lake Opal Plant')}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      padding: 0,
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    {expandedFacilities.has('Lake Opal Plant') ? (
-                      <CaretUp size={16} weight="bold" color="#7F8FA4" />
-                    ) : (
-                      <CaretDown size={16} weight="bold" color="#7F8FA4" />
-                    )}
-                  </button>
                   <Factory size={20} weight="regular" color="#1C58F7" />
                   <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
                     Lake Opal Plant
@@ -326,65 +256,27 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
                       All clear
                     </p>
                   </div>
-
-                  {/* See more Link */}
-                  <button
-                    onClick={() => toggleFacility('Lake Opal Plant')}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      padding: '4px 8px',
-                    }}
-                  >
-                    <p style={{ fontSize: '12px', lineHeight: '20px', fontWeight: 500, color: '#1C58F7', fontFamily: 'DM Sans' }}>
-                      {expandedFacilities.has('Lake Opal Plant') ? 'See Less' : 'See more'}
-                    </p>
-                    {expandedFacilities.has('Lake Opal Plant') ? (
-                      <CaretUp size={12} weight="bold" color="#1C58F7" />
-                    ) : (
-                      <CaretDown size={12} weight="bold" color="#1C58F7" />
-                    )}
-                  </button>
                 </div>
 
                 {/* Single XL Progress Bar */}
-                {!expandedFacilities.has('Lake Opal Plant') && (
-                  <div style={{ paddingLeft: '28px' }}>
-                    <ProgressBar
-                      size="xl"
-                      name=""
-                      current={17204}
-                      target={17684}
-                      capacity={21413}
-                      percentage={91}
-                      status="good"
-                      showSettings={false}
-                    />
-                  </div>
-                )}
+                <div style={{ paddingLeft: '28px' }}>
+                  <ProgressBar
+                    size="xl"
+                    name=""
+                    current={17204}
+                    target={17684}
+                    capacity={21413}
+                    percentage={91}
+                    status="good"
+                    showSettings={false}
+                  />
+                </div>
               </div>
 
-              {/* Second Lake Opal Terminal (collapsed) */}
+              {/* Second Lake Opal Terminal */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* Facility Header */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <button
-                    onClick={() => toggleFacility('Lake Opal Terminal 2')}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      padding: 0,
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <CaretDown size={16} weight="bold" color="#7F8FA4" />
-                  </button>
                   <Factory size={20} weight="regular" color="#1C58F7" />
                   <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
                     Lake Opal Terminal
@@ -400,25 +292,6 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
                       1 Alert
                     </p>
                   </div>
-
-                  {/* See more Link */}
-                  <button
-                    onClick={() => toggleFacility('Lake Opal Terminal 2')}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      padding: '4px 8px',
-                    }}
-                  >
-                    <p style={{ fontSize: '12px', lineHeight: '20px', fontWeight: 500, color: '#1C58F7', fontFamily: 'DM Sans' }}>
-                      See more
-                    </p>
-                    <CaretDown size={12} weight="bold" color="#1C58F7" />
-                  </button>
                 </div>
 
                 {/* Single XL Progress Bar */}
@@ -443,23 +316,6 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* Material Header */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <button
-                    onClick={() => toggleFacility('KTS')}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      padding: 0,
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    {expandedFacilities.has('KTS') ? (
-                      <CaretUp size={16} weight="bold" color="#7F8FA4" />
-                    ) : (
-                      <CaretDown size={16} weight="bold" color="#7F8FA4" />
-                    )}
-                  </button>
                   {materialIcons.KTS}
                   <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
                     KTS (Potassium Thiosulfate)
@@ -475,86 +331,27 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
                       1 Alert
                     </p>
                   </div>
-
-                  {/* See Less Link */}
-                  <button
-                    onClick={() => toggleFacility('KTS')}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      padding: '4px 8px',
-                    }}
-                  >
-                    <p style={{ fontSize: '12px', lineHeight: '20px', fontWeight: 500, color: '#1C58F7', fontFamily: 'DM Sans' }}>
-                      {expandedFacilities.has('KTS') ? 'See Less' : 'See more'}
-                    </p>
-                    {expandedFacilities.has('KTS') ? (
-                      <CaretUp size={12} weight="bold" color="#1C58F7" />
-                    ) : (
-                      <CaretDown size={12} weight="bold" color="#1C58F7" />
-                    )}
-                  </button>
                 </div>
 
                 {/* Single XL Progress Bar */}
-                {!expandedFacilities.has('KTS') && (
-                  <div style={{ paddingLeft: '28px' }}>
-                    <ProgressBar
-                      size="xl"
-                      name=""
-                      current={13487}
-                      target={18383}
-                      capacity={25207}
-                      percentage={47}
-                      status="critical"
-                      showSettings={false}
-                    />
-                  </div>
-                )}
-
-                {/* Facility Progress Bars (XL) */}
-                {expandedFacilities.has('KTS') && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', paddingLeft: '28px' }}>
-                    <ProgressBar
-                      size="xl"
-                      name="Lake Opal Terminal"
-                      icon={<Factory size={20} weight="regular" color="#1C58F7" />}
-                      current={13487}
-                      target={18383}
-                      capacity={25207}
-                      percentage={47}
-                      status="critical"
-                      onSettingsClick={() => handleSettingsClick('KTS - Lake Opal Terminal', 13487, 18383, 25207)}
-                    />
-                  </div>
-                )}
+                <div style={{ paddingLeft: '28px' }}>
+                  <ProgressBar
+                    size="xl"
+                    name=""
+                    current={13487}
+                    target={18383}
+                    capacity={25207}
+                    percentage={47}
+                    status="critical"
+                    showSettings={false}
+                  />
+                </div>
               </div>
 
               {/* KMS Material */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* Material Header */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <button
-                    onClick={() => toggleFacility('KMS')}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      padding: 0,
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    {expandedFacilities.has('KMS') ? (
-                      <CaretUp size={16} weight="bold" color="#7F8FA4" />
-                    ) : (
-                      <CaretDown size={16} weight="bold" color="#7F8FA4" />
-                    )}
-                  </button>
                   {materialIcons.KMS}
                   <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
                     KMS (Potassium Magnesium Sulfate)
@@ -570,29 +367,6 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
                       1 Alert
                     </p>
                   </div>
-
-                  {/* See more Link */}
-                  <button
-                    onClick={() => toggleFacility('KMS')}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      padding: '4px 8px',
-                    }}
-                  >
-                    <p style={{ fontSize: '12px', lineHeight: '20px', fontWeight: 500, color: '#1C58F7', fontFamily: 'DM Sans' }}>
-                      {expandedFacilities.has('KMS') ? 'See Less' : 'See more'}
-                    </p>
-                    {expandedFacilities.has('KMS') ? (
-                      <CaretUp size={12} weight="bold" color="#1C58F7" />
-                    ) : (
-                      <CaretDown size={12} weight="bold" color="#1C58F7" />
-                    )}
-                  </button>
                 </div>
 
                 {/* Single XL Progress Bar */}
@@ -614,23 +388,6 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* Material Header */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <button
-                    onClick={() => toggleFacility('Thio-Sul')}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      padding: 0,
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    {expandedFacilities.has('Thio-Sul') ? (
-                      <CaretUp size={16} weight="bold" color="#7F8FA4" />
-                    ) : (
-                      <CaretDown size={16} weight="bold" color="#7F8FA4" />
-                    )}
-                  </button>
                   {materialIcons['Thio-Sul']}
                   <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
                     Thio-Sul (Ammonium Thiosulfate)
@@ -646,29 +403,6 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
                       All clear
                     </p>
                   </div>
-
-                  {/* See more Link */}
-                  <button
-                    onClick={() => toggleFacility('Thio-Sul')}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      padding: '4px 8px',
-                    }}
-                  >
-                    <p style={{ fontSize: '12px', lineHeight: '20px', fontWeight: 500, color: '#1C58F7', fontFamily: 'DM Sans' }}>
-                      {expandedFacilities.has('Thio-Sul') ? 'See Less' : 'See more'}
-                    </p>
-                    {expandedFacilities.has('Thio-Sul') ? (
-                      <CaretUp size={12} weight="bold" color="#1C58F7" />
-                    ) : (
-                      <CaretDown size={12} weight="bold" color="#1C58F7" />
-                    )}
-                  </button>
                 </div>
 
                 {/* Single XL Progress Bar */}
