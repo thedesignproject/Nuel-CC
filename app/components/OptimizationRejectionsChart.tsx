@@ -21,6 +21,12 @@ import { COLORS, SPACING, CARD_CURVATURE } from '../design-tokens';
 export interface OptimizationRejectionsChartProps {
   /** Additional className for custom styling */
   className?: string;
+  /** Total rejections count */
+  totalRejections?: number;
+  /** Total rejected value in thousands */
+  rejectedValueK?: number;
+  /** Multiplier to scale the chart data based on filters */
+  dataMultiplier?: number;
 }
 
 interface ChartDataPoint {
@@ -219,10 +225,12 @@ const CustomTooltip = ({ active, payload }: any) => {
 // SUMMARY CARDS
 // ============================================
 
-const SummaryCards = () => {
-  const totalRejections = '41 Total Rejections';
-  const rejectedValue = '$635K Rejected Value';
+interface SummaryCardsProps {
+  totalRejections: number;
+  rejectedValueK: number;
+}
 
+const SummaryCards = ({ totalRejections, rejectedValueK }: SummaryCardsProps) => {
   return (
     <div
       style={{
@@ -255,7 +263,7 @@ const SummaryCards = () => {
             textAlign: 'center',
           }}
         >
-          {totalRejections}
+          {totalRejections} Total Rejections
         </div>
         <div
           style={{
@@ -294,7 +302,7 @@ const SummaryCards = () => {
             textAlign: 'center',
           }}
         >
-          {rejectedValue}
+          ${rejectedValueK}K Rejected Value
         </div>
         <div
           style={{
@@ -317,7 +325,11 @@ const SummaryCards = () => {
 // RANKING CARDS
 // ============================================
 
-const RankingCardsSection = () => {
+interface RankingCardsSectionProps {
+  cards: RankingCard[];
+}
+
+const RankingCardsSection = ({ cards }: RankingCardsSectionProps) => {
   return (
     <div
       style={{
@@ -326,7 +338,7 @@ const RankingCardsSection = () => {
         marginTop: SPACING[16],
       }}
     >
-      {rankingCards.map((card) => (
+      {cards.map((card) => (
         <div
           key={card.rank}
           style={{
@@ -419,10 +431,27 @@ const RankingCardsSection = () => {
 export const OptimizationRejectionsChart = React.forwardRef<
   HTMLDivElement,
   OptimizationRejectionsChartProps
->(({ className }, ref) => {
+>(({ className, totalRejections = 41, rejectedValueK = 635, dataMultiplier = 1 }, ref) => {
   const [displayData, setDisplayData] = useState<ChartDataPoint[]>([]);
   const chartRef = React.useRef<HTMLDivElement>(null);
   const hasAnimated = React.useRef(false);
+
+  // Generate scaled chart data based on multiplier
+  const scaledChartData = React.useMemo(() => {
+    return chartData.map(item => ({
+      ...item,
+      rejections: Math.round(item.rejections * dataMultiplier),
+      rejectedValue: Math.round(item.rejectedValue * dataMultiplier),
+    }));
+  }, [dataMultiplier]);
+
+  // Generate scaled ranking cards
+  const scaledRankingCards = React.useMemo(() => {
+    return rankingCards.map(card => ({
+      ...card,
+      rejections: Math.round(card.rejections * dataMultiplier),
+    }));
+  }, [dataMultiplier]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -434,7 +463,7 @@ export const OptimizationRejectionsChart = React.forwardRef<
 
             // Small delay to ensure component is mounted
             setTimeout(() => {
-              setDisplayData(chartData);
+              setDisplayData(scaledChartData);
             }, 100);
           }
         });
@@ -451,12 +480,19 @@ export const OptimizationRejectionsChart = React.forwardRef<
         observer.unobserve(chartRef.current);
       }
     };
-  }, []);
+  }, [scaledChartData]);
+
+  // Update display data when multiplier changes (after initial animation)
+  useEffect(() => {
+    if (hasAnimated.current) {
+      setDisplayData(scaledChartData);
+    }
+  }, [scaledChartData]);
 
   return (
     <div ref={chartRef} className={className}>
       {/* Summary Cards */}
-      <SummaryCards />
+      <SummaryCards totalRejections={totalRejections} rejectedValueK={rejectedValueK} />
 
       {/* Chart Container */}
       <div
@@ -582,7 +618,7 @@ export const OptimizationRejectionsChart = React.forwardRef<
       </div>
 
       {/* Ranking Cards */}
-      <RankingCardsSection />
+      <RankingCardsSection cards={scaledRankingCards} />
     </div>
   );
 });

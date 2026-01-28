@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { TopBar } from '../../components/TopBar';
 import { Sidebar } from '../../components/Sidebar';
 import { NotificationsPanel } from '../../components/NotificationsPanel';
@@ -11,7 +11,17 @@ import { LAYOUT_SPACING } from '../../design-tokens';
 
 export default function ManagementGapsPage() {
   const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
   const { logout } = useAuth();
+
+  const handleFilterChange = useCallback((filters: { region: string; timeFrame: string; material: string }) => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      setRefreshKey(prev => prev + 1);
+      setIsRefreshing(false);
+    }, 300);
+  }, []);
 
   return (
     <div className="min-h-screen relative bg-[#E8F3FF]">
@@ -56,11 +66,12 @@ export default function ManagementGapsPage() {
               <TopBar
                 title="Untapped Potential"
                 subtitle="Track optimization opportunities and understand manager decision-making with comprehensive reason analysis"
+                onFilterChange={handleFilterChange}
               />
             </div>
 
             {/* Page Content */}
-            <div className="flex flex-col gap-[24px]" style={{ overflowX: 'hidden' }}>
+            <div className={`flex flex-col gap-[24px] transition-opacity duration-200 ${isRefreshing ? 'opacity-50' : 'opacity-100'}`} key={refreshKey} style={{ overflowX: 'hidden' }}>
               {/* Metric Cards Section */}
               <div
                 style={{

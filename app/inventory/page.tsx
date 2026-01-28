@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { TopBar } from '../components/TopBar';
 import { Sidebar } from '../components/Sidebar';
 import { NotificationsPanel } from '../components/NotificationsPanel';
@@ -13,7 +13,18 @@ import { LAYOUT_SPACING } from '../design-tokens';
 
 export default function InventoryPage() {
   const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
   const { logout } = useAuth();
+
+  // Handle filter changes - creates visual refresh effect
+  const handleFilterChange = useCallback((filters: { region: string; timeFrame: string; material: string }) => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      setRefreshKey(prev => prev + 1);
+      setIsRefreshing(false);
+    }, 300);
+  }, []);
 
   return (
     <div className="min-h-screen relative bg-[#E8F3FF]">
@@ -57,12 +68,13 @@ export default function InventoryPage() {
             <div className="sticky top-0 z-20" style={{ marginBottom: LAYOUT_SPACING.contentTopGap }}>
               <TopBar
                 title="Inventory Management"
-                subtitle="Complete visibility and control of fertilizer inventory across all facilities"
+                subtitle="Complete visibility and control of beverage materials inventory across all facilities"
+                onFilterChange={handleFilterChange}
               />
             </div>
 
             {/* Page Content */}
-            <div className="flex flex-col gap-[24px]" style={{ overflowX: 'hidden' }}>
+            <div className={`flex flex-col gap-[24px] transition-opacity duration-200 ${isRefreshing ? 'opacity-50' : 'opacity-100'}`} key={refreshKey} style={{ overflowX: 'hidden' }}>
               {/* Inventory Alerts and Map Section */}
               <div
                 style={{

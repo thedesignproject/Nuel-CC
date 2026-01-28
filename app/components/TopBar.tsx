@@ -16,6 +16,8 @@ export interface TopBarProps {
   isSandboxMode?: boolean;
   /** Sandbox toggle handler (when showSandboxToggle is true) */
   onSandboxToggle?: (isOn: boolean) => void;
+  /** Callback when any filter changes - triggers data refresh in parent */
+  onFilterChange?: (filters: { region: string; timeFrame: string; material: string }) => void;
 }
 
 interface DropdownOption {
@@ -43,6 +45,7 @@ export const TopBar = React.forwardRef<HTMLDivElement, TopBarProps>(
       showSandboxToggle = false,
       isSandboxMode = false,
       onSandboxToggle,
+      onFilterChange,
     },
     ref
   ) => {
@@ -52,17 +55,19 @@ export const TopBar = React.forwardRef<HTMLDivElement, TopBarProps>(
     const [materialOpen, setMaterialOpen] = useState(false);
 
     // Selected values
-    const [selectedRegion, setSelectedRegion] = useState('Midwest');
+    const [selectedRegion, setSelectedRegion] = useState('All Regions');
     const [selectedTimeFrame, setSelectedTimeFrame] = useState('Next 3 Months');
-    const [selectedMaterial, setSelectedMaterial] = useState('KTS');
+    const [selectedMaterial, setSelectedMaterial] = useState('All Materials');
 
-    // Dropdown options
+    // US Beverage Industry Regions
     const regionOptions: DropdownOption[] = [
-      { value: 'Midwest', label: 'Midwest' },
-      { value: 'Northeast', label: 'Northeast' },
+      { value: 'All Regions', label: 'All Regions' },
       { value: 'Southeast', label: 'Southeast' },
+      { value: 'Midwest', label: 'Midwest' },
+      { value: 'West Coast', label: 'West Coast' },
       { value: 'Southwest', label: 'Southwest' },
-      { value: 'West', label: 'West' },
+      { value: 'Northeast', label: 'Northeast' },
+      { value: 'Mountain', label: 'Mountain' },
     ];
 
     const timeFrameOptions: DropdownOption[] = [
@@ -73,13 +78,35 @@ export const TopBar = React.forwardRef<HTMLDivElement, TopBarProps>(
       { value: 'Last 6 Months', label: 'Last 6 Months' },
     ];
 
+    // Beverage Industry Materials
     const materialOptions: DropdownOption[] = [
-      { value: 'KTS', label: 'KTS' },
-      { value: 'Steel', label: 'Steel' },
-      { value: 'Aluminum', label: 'Aluminum' },
-      { value: 'Plastic', label: 'Plastic' },
-      { value: 'Composite', label: 'Composite' },
+      { value: 'All Materials', label: 'All Materials' },
+      { value: 'HFCS', label: 'HFCS' },
+      { value: 'CO₂', label: 'CO₂' },
+      { value: 'Caramel Color', label: 'Caramel Color' },
+      { value: 'Phosphoric Acid', label: 'Phosphoric Acid' },
+      { value: 'Cola Extract', label: 'Cola Extract' },
+      { value: 'Citric Acid', label: 'Citric Acid' },
     ];
+
+    // Handle filter changes with callback
+    const handleRegionChange = (value: string) => {
+      setSelectedRegion(value);
+      setRegionOpen(false);
+      onFilterChange?.({ region: value, timeFrame: selectedTimeFrame, material: selectedMaterial });
+    };
+
+    const handleTimeFrameChange = (value: string) => {
+      setSelectedTimeFrame(value);
+      setTimeFrameOpen(false);
+      onFilterChange?.({ region: selectedRegion, timeFrame: value, material: selectedMaterial });
+    };
+
+    const handleMaterialChange = (value: string) => {
+      setSelectedMaterial(value);
+      setMaterialOpen(false);
+      onFilterChange?.({ region: selectedRegion, timeFrame: selectedTimeFrame, material: value });
+    };
 
     // Refs for click outside detection
     const regionRef = useRef<HTMLDivElement>(null);
@@ -270,10 +297,7 @@ export const TopBar = React.forwardRef<HTMLDivElement, TopBarProps>(
                   {regionOptions.map((option) => (
                     <button
                       key={option.value}
-                      onClick={() => {
-                        setSelectedRegion(option.value);
-                        setRegionOpen(false);
-                      }}
+                      onClick={() => handleRegionChange(option.value)}
                       className={cn(
                         'w-full px-[12px] py-[8px] text-left',
                         'text-[14px] leading-[22px] font-normal',
@@ -371,10 +395,7 @@ export const TopBar = React.forwardRef<HTMLDivElement, TopBarProps>(
                 {timeFrameOptions.map((option) => (
                   <button
                     key={option.value}
-                    onClick={() => {
-                      setSelectedTimeFrame(option.value);
-                      setTimeFrameOpen(false);
-                    }}
+                    onClick={() => handleTimeFrameChange(option.value)}
                     className={cn(
                       'w-full px-[12px] py-[8px] text-left',
                       'text-[14px] leading-[22px] font-normal',
@@ -464,10 +485,7 @@ export const TopBar = React.forwardRef<HTMLDivElement, TopBarProps>(
                 {materialOptions.map((option) => (
                   <button
                     key={option.value}
-                    onClick={() => {
-                      setSelectedMaterial(option.value);
-                      setMaterialOpen(false);
-                    }}
+                    onClick={() => handleMaterialChange(option.value)}
                     className={cn(
                       'w-full px-[12px] py-[8px] text-left',
                       'text-[14px] leading-[22px] font-normal',

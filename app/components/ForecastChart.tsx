@@ -38,24 +38,25 @@ interface ChartDataPoint {
 // DATA - From Figma specifications
 // ============================================
 
+// Beverage industry shipment forecast data (tons/gallons in thousands)
 const chartData: ChartDataPoint[] = [
-  { date: '2 JUN', ordersShipped: 2550, unshippedGap: 350, newOrders: 0, forecast: 2800 },
-  { date: '8 JUN', ordersShipped: 2700, unshippedGap: 300, newOrders: 0, forecast: 2850 },
-  { date: '14 JUN', ordersShipped: 2600, unshippedGap: 200, newOrders: 0, forecast: 2750 },
-  { date: '20 JUN', ordersShipped: 2400, unshippedGap: 400, newOrders: 0, forecast: 2700 },
-  { date: '26 JUN', ordersShipped: 2550, unshippedGap: 350, newOrders: 0, forecast: 2800 },
-  { date: '2 JUL', ordersShipped: 2450, unshippedGap: 350, newOrders: 0, forecast: 2700 },
-  { date: '8 JUL', ordersShipped: 2500, unshippedGap: 400, newOrders: 0, forecast: 2800 },
-  { date: '14 JUL', ordersShipped: 2350, unshippedGap: 350, newOrders: 0, forecast: 2600 },
-  { date: '20 JUL', ordersShipped: 0, unshippedGap: 0, newOrders: 2550, forecast: 2850, isToday: true },
-  { date: '26 JUL', ordersShipped: 0, unshippedGap: 0, newOrders: 2650, forecast: 2900 },
-  { date: '1 AUG', ordersShipped: 0, unshippedGap: 0, newOrders: 2700, forecast: 2950 },
-  { date: '7 AUG', ordersShipped: 0, unshippedGap: 0, newOrders: 2600, forecast: 2850 },
-  { date: '13 AUG', ordersShipped: 0, unshippedGap: 0, newOrders: 2750, forecast: 3000 },
-  { date: '19 AUG', ordersShipped: 0, unshippedGap: 0, newOrders: 2650, forecast: 2900 },
-  { date: '25 AUG', ordersShipped: 0, unshippedGap: 0, newOrders: 2800, forecast: 3050 },
-  { date: '31 AUG', ordersShipped: 0, unshippedGap: 0, newOrders: 2700, forecast: 2950 },
-  { date: '6 SEPT', ordersShipped: 0, unshippedGap: 0, newOrders: 2550, forecast: 2800 },
+  { date: '25 NOV', ordersShipped: 8450, unshippedGap: 420, newOrders: 0, forecast: 8680 },
+  { date: '2 DEC', ordersShipped: 8820, unshippedGap: 380, newOrders: 0, forecast: 9050 },
+  { date: '9 DEC', ordersShipped: 9150, unshippedGap: 290, newOrders: 0, forecast: 9320 },
+  { date: '16 DEC', ordersShipped: 9480, unshippedGap: 450, newOrders: 0, forecast: 9750 },
+  { date: '23 DEC', ordersShipped: 8920, unshippedGap: 380, newOrders: 0, forecast: 9180 },
+  { date: '30 DEC', ordersShipped: 7850, unshippedGap: 320, newOrders: 0, forecast: 8050 },
+  { date: '6 JAN', ordersShipped: 8250, unshippedGap: 410, newOrders: 0, forecast: 8520 },
+  { date: '13 JAN', ordersShipped: 8680, unshippedGap: 350, newOrders: 0, forecast: 8920 },
+  { date: '20 JAN', ordersShipped: 0, unshippedGap: 0, newOrders: 9120, forecast: 9350, isToday: true },
+  { date: '27 JAN', ordersShipped: 0, unshippedGap: 0, newOrders: 9450, forecast: 9680 },
+  { date: '3 FEB', ordersShipped: 0, unshippedGap: 0, newOrders: 9780, forecast: 9950 },
+  { date: '10 FEB', ordersShipped: 0, unshippedGap: 0, newOrders: 10150, forecast: 10380 },
+  { date: '17 FEB', ordersShipped: 0, unshippedGap: 0, newOrders: 10520, forecast: 10720 },
+  { date: '24 FEB', ordersShipped: 0, unshippedGap: 0, newOrders: 10890, forecast: 11050 },
+  { date: '3 MAR', ordersShipped: 0, unshippedGap: 0, newOrders: 11250, forecast: 11420 },
+  { date: '10 MAR', ordersShipped: 0, unshippedGap: 0, newOrders: 11580, forecast: 11780 },
+  { date: '17 MAR', ordersShipped: 0, unshippedGap: 0, newOrders: 11920, forecast: 12150 },
 ];
 
 // ============================================

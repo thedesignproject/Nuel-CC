@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { TopBar } from '../components/TopBar';
 import { Sidebar } from '../components/Sidebar';
 import { NotificationsPanel } from '../components/NotificationsPanel';
@@ -18,10 +18,143 @@ import { FadeInSection } from '../components/FadeInSection';
 import { RegionalPerformanceTable } from '../components/RegionalPerformanceTable';
 import { LAYOUT_SPACING } from '../design-tokens';
 
+// Filter-based data multipliers for realistic variations
+const getFilterMultiplier = (filters: { region: string; timeFrame: string; material: string }) => {
+  let multiplier = 1;
+
+  // Region multipliers
+  const regionMultipliers: Record<string, number> = {
+    'All Regions': 1,
+    'Southeast': 0.28,
+    'Midwest': 0.22,
+    'West Coast': 0.19,
+    'Southwest': 0.15,
+    'Northeast': 0.12,
+    'Mountain': 0.04,
+  };
+
+  // Time frame multipliers
+  const timeMultipliers: Record<string, number> = {
+    'Next 3 Months': 0.25,
+    'Next 6 Months': 0.5,
+    'Next Year': 1,
+    'Last 3 Months': 0.25,
+    'Last 6 Months': 0.5,
+  };
+
+  // Material multipliers
+  const materialMultipliers: Record<string, number> = {
+    'All Materials': 1,
+    'HFCS': 0.35,
+    'CO₂': 0.18,
+    'Caramel Color': 0.12,
+    'Phosphoric Acid': 0.15,
+    'Cola Extract': 0.08,
+    'Citric Acid': 0.12,
+  };
+
+  multiplier *= regionMultipliers[filters.region] || 1;
+  multiplier *= timeMultipliers[filters.timeFrame] || 1;
+  multiplier *= materialMultipliers[filters.material] || 1;
+
+  return multiplier;
+};
+
 export default function DashboardPage() {
   const [activeView, setActiveView] = useState(0); // 0 = Grid View, 1 = Table View
   const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [currentFilters, setCurrentFilters] = useState({
+    region: 'All Regions',
+    timeFrame: 'Next 3 Months',
+    material: 'All Materials'
+  });
   const { logout } = useAuth();
+
+  // Handle filter changes - creates visual refresh effect and updates data
+  const handleFilterChange = useCallback((filters: { region: string; timeFrame: string; material: string }) => {
+    setIsRefreshing(true);
+    // Brief loading state for visual feedback
+    setTimeout(() => {
+      setCurrentFilters(filters);
+      setRefreshKey(prev => prev + 1);
+      setIsRefreshing(false);
+    }, 300);
+  }, []);
+
+  // Calculate dynamic metrics based on filters
+  const dynamicMetrics = useMemo(() => {
+    const mult = getFilterMultiplier(currentFilters);
+    const baseSavings = 985000;
+    const baseShipments = 3648;
+    const baseCostPerShipment = 5420;
+
+    return {
+      annualSavings: Math.round(baseSavings * mult),
+      shipments: Math.round(baseShipments * mult),
+      costPerShipment: Math.round(baseCostPerShipment * (0.9 + Math.random() * 0.2)),
+      onTimeDelivery: (88 + Math.random() * 6).toFixed(1),
+    };
+  }, [currentFilters, refreshKey]);
+
+  // Dynamic regional data based on filters
+  const dynamicRegionalData = useMemo(() => {
+    const isRegionFilter = currentFilters.region !== 'All Regions';
+    const mult = getFilterMultiplier(currentFilters);
+
+    const baseData = [
+      { region: 'Southeast', volume: 1245, savings: 385000, rate: 93.2, status: 'excellent' as const },
+      { region: 'Midwest', volume: 980, savings: 295000, rate: 91.8, status: 'excellent' as const },
+      { region: 'West Coast', volume: 865, savings: 248000, rate: 89.5, status: 'good' as const },
+      { region: 'Southwest', volume: 558, savings: 157000, rate: 85.6, status: 'warning' as const },
+    ];
+
+    // If filtering by specific region, only show that region
+    const filteredData = isRegionFilter
+      ? baseData.filter(d => d.region === currentFilters.region)
+      : baseData;
+
+    return filteredData.map(d => ({
+      ...d,
+      volume: Math.round(d.volume * (currentFilters.region === 'All Regions' ? 1 : 1) * (currentFilters.timeFrame === 'Next Year' ? 4 : currentFilters.timeFrame.includes('6') ? 2 : 1)),
+      savings: Math.round(d.savings * mult * 4),
+    }));
+  }, [currentFilters, refreshKey]);
+
+  // Dynamic Optimization Rejections data based on filters
+  const dynamicRejectionsData = useMemo(() => {
+    const mult = getFilterMultiplier(currentFilters);
+    const baseTotalRejections = 41;
+    const baseRejectedValueK = 635;
+
+    return {
+      totalRejections: Math.round(baseTotalRejections * mult),
+      rejectedValueK: Math.round(baseRejectedValueK * mult),
+      dataMultiplier: mult,
+    };
+  }, [currentFilters, refreshKey]);
+
+  // Dynamic KPI data based on filters
+  const dynamicKPIData = useMemo(() => {
+    const mult = getFilterMultiplier(currentFilters);
+    const baseETAAccuracy = 91.2;
+    const baseCapacityUtilization = 87.5;
+    const basePeakReadiness = 92.8;
+    const baseActiveAlerts = 10;
+
+    // Add small variations based on filters
+    const variation = (Math.random() - 0.5) * 2;
+
+    return {
+      etaAccuracy: Math.min(99, Math.max(75, baseETAAccuracy + variation)).toFixed(1),
+      capacityUtilization: Math.min(99, Math.max(70, baseCapacityUtilization + variation)).toFixed(1),
+      peakReadiness: Math.min(99, Math.max(75, basePeakReadiness + variation)).toFixed(1),
+      activeAlerts: Math.max(1, Math.round(baseActiveAlerts * mult)),
+      criticalAlerts: Math.max(1, Math.round(3 * mult)),
+      warningAlerts: Math.max(1, Math.round(7 * mult)),
+    };
+  }, [currentFilters, refreshKey]);
   return (
     <div className="min-h-screen relative bg-[#E8F3FF]">
       {/* Grid Background */}
@@ -65,11 +198,12 @@ export default function DashboardPage() {
               <TopBar
                 title="Overview Dashboard"
                 subtitle="Company-wide performance metrics and supply chain optimization impact"
+                onFilterChange={handleFilterChange}
               />
             </div>
 
             {/* Dashboard Content */}
-            <div className="flex flex-col gap-[24px]">
+            <div className={`flex flex-col gap-[24px] transition-opacity duration-200 ${isRefreshing ? 'opacity-50' : 'opacity-100'}`} key={refreshKey}>
             {/* Active Alerts Section */}
             <FadeInSection delay={0}>
               <ActivityAlertWidget />
@@ -77,61 +211,61 @@ export default function DashboardPage() {
 
             {/* Metric Cards Section */}
             <FadeInSection delay={50}>
-              <div className="flex gap-[12px] w-full">
+              <div className="grid grid-cols-4 gap-[12px] w-full">
               <MetricCard
                 icon="dollar"
-                title="Total Cost Savings"
-                value="$12,500,000"
+                title="Annual Cost Savings"
+                value={`$${dynamicMetrics.annualSavings.toLocaleString()}`}
                 trend={{
                   direction: 'up',
-                  percentage: '+52.4%',
+                  percentage: '+12.4%',
                   label: 'vs. previous year',
                 }}
                 comparison={{
-                  preNuel: '$8,200,000',
-                  postNuel: '$12,500,000',
+                  preNuel: `$${Math.round(dynamicMetrics.annualSavings * 0.73).toLocaleString()}`,
+                  postNuel: `$${dynamicMetrics.annualSavings.toLocaleString()}`,
                 }}
               />
               <MetricCard
                 icon="trending-down"
-                title="Average Cost per Ton"
-                value="$245.80"
+                title="Avg Cost per Shipment"
+                value={`$${dynamicMetrics.costPerShipment.toLocaleString()}`}
                 trend={{
                   direction: 'down',
-                  percentage: '-17.6%',
+                  percentage: '-8.2%',
                   label: 'improvement',
                 }}
                 comparison={{
-                  preNuel: '$298.50',
-                  postNuel: '$245.80',
+                  preNuel: `$${Math.round(dynamicMetrics.costPerShipment * 1.09).toLocaleString()}`,
+                  postNuel: `$${dynamicMetrics.costPerShipment.toLocaleString()}`,
                 }}
               />
               <MetricCard
                 icon="package"
-                title="Total Volume Moved"
-                value="2.45M Tons"
+                title="Annual Shipments"
+                value={dynamicMetrics.shipments.toLocaleString()}
                 trend={{
                   direction: 'up',
-                  percentage: '+16.7%',
+                  percentage: '+6.8%',
                   label: 'vs. previous year',
                 }}
                 comparison={{
-                  preNuel: '2.10M',
-                  postNuel: '2.45M',
+                  preNuel: Math.round(dynamicMetrics.shipments * 0.94).toLocaleString(),
+                  postNuel: dynamicMetrics.shipments.toLocaleString(),
                 }}
               />
               <MetricCard
                 icon="target"
-                title="Optimization Rate"
-                value="87.5%"
+                title="On-Time Delivery"
+                value={`${dynamicMetrics.onTimeDelivery}%`}
                 trend={{
                   direction: 'up',
-                  percentage: '+155.8%',
+                  percentage: '+3.1%',
                   label: 'vs. previous year',
                 }}
                 comparison={{
-                  preNuel: '34.2%',
-                  postNuel: '87.5%',
+                  preNuel: `${(parseFloat(dynamicMetrics.onTimeDelivery) - 2.7).toFixed(1)}%`,
+                  postNuel: `${dynamicMetrics.onTimeDelivery}%`,
                 }}
               />
               </div>
@@ -161,175 +295,50 @@ export default function DashboardPage() {
                 <div
                   style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(2, 1fr)',
+                    gridTemplateColumns: dynamicRegionalData.length === 1 ? '1fr' : 'repeat(2, 1fr)',
                     gap: '11.5px',
                     width: '100%',
                   }}
                 >
-                  {/* Northeast Region - Warning */}
-                  <PerformanceCard
-                    region="Northeast"
-                    directionIcon="down-left"
-                    alerts={4}
-                    status="warning"
-                    executionRate="78.3%"
-                    volume="420K Tons"
-                    savings="$2M"
-                    untappedPotential="$720K"
-                    facilities={12}
-                    plants={8}
-                    terminals={4}
-                    onAlertsClick={() => console.log('View Northeast alerts')}
-                    onReviewClick={() => console.log('Review Northeast potential')}
-                  />
-
-                  {/* Midwest Region - Good */}
-                  <PerformanceCard
-                    region="Midwest"
-                    directionIcon="up-right"
-                    alerts={2}
-                    status="good"
-                    executionRate="89.2%"
-                    volume="680K Tons"
-                    savings="$3M"
-                    untappedPotential="$420K"
-                    facilities={18}
-                    plants={12}
-                    terminals={6}
-                    onAlertsClick={() => console.log('View Midwest alerts')}
-                    onReviewClick={() => console.log('Review Midwest potential')}
-                  />
-
-                  {/* Southeast Region - Good */}
-                  <PerformanceCard
-                    region="Southeast"
-                    directionIcon="down-right"
-                    alerts={1}
-                    status="good"
-                    executionRate="85.7%"
-                    volume="750K Tons"
-                    savings="$3M"
-                    untappedPotential="$580K"
-                    facilities={15}
-                    plants={10}
-                    terminals={5}
-                    onAlertsClick={() => console.log('View Southeast alerts')}
-                    onReviewClick={() => console.log('Review Southeast potential')}
-                  />
-
-                  {/* West Region - Excellent */}
-                  <PerformanceCard
-                    region="West"
-                    directionIcon="up-right"
-                    alerts={0}
-                    status="excellent"
-                    executionRate="91.5%"
-                    volume="600K Tons"
-                    savings="$3M"
-                    untappedPotential="$280K"
-                    facilities={14}
-                    plants={9}
-                    terminals={5}
-                    onReviewClick={() => console.log('Review West potential')}
-                  />
+                  {dynamicRegionalData.map((data) => (
+                    <PerformanceCard
+                      key={data.region}
+                      region={data.region}
+                      directionIcon={data.status === 'excellent' ? 'up-right' : data.status === 'good' ? 'down-right' : 'down-left'}
+                      alerts={data.status === 'excellent' ? 2 : data.status === 'good' ? 3 : 4}
+                      status={data.status}
+                      executionRate={`${data.rate}%`}
+                      volume={`${data.volume.toLocaleString()} Shipments`}
+                      savings={`$${Math.round(data.savings / 1000)}K`}
+                      untappedPotential={`$${Math.round((data.savings * 0.11) / 1000)}K`}
+                      facilities={data.region === 'Southeast' ? 7 : data.region === 'Midwest' ? 5 : data.region === 'West Coast' ? 6 : 5}
+                      plants={data.region === 'Southeast' ? 5 : data.region === 'Midwest' ? 4 : data.region === 'West Coast' ? 5 : 3}
+                      terminals={data.region === 'Southeast' ? 2 : data.region === 'Midwest' ? 1 : data.region === 'West Coast' ? 1 : 2}
+                      onAlertsClick={() => console.log(`View ${data.region} alerts`)}
+                      onReviewClick={() => console.log(`Review ${data.region} potential`)}
+                    />
+                  ))}
                 </div>
               )}
 
               {/* Table View */}
               {activeView === 1 && (
                 <RegionalPerformanceTable
-                  data={[
-                    {
-                      location: 'Midwest',
-                      plants: 12,
-                      terminals: 6,
-                      volume: 680000,
-                      costPerTon: 42.15,
-                      costPerTonPre: 48.20,
-                      currentCost: 2850000,
-                      currentCostPre: 3275000,
-                      preNuel: 3275000,
-                      executionRate: 89.2,
-                      untappedPotential: 420000,
-                      alerts: 2,
-                      status: 'good',
-                    },
-                    {
-                      location: 'Southeast',
-                      plants: 10,
-                      terminals: 5,
-                      volume: 750000,
-                      costPerTon: 38.75,
-                      costPerTonPre: 45.80,
-                      currentCost: 2906250,
-                      currentCostPre: 3435000,
-                      preNuel: 3435000,
-                      executionRate: 85.7,
-                      untappedPotential: 580000,
-                      alerts: 1,
-                      status: 'good',
-                    },
-                    {
-                      location: 'Northeast',
-                      plants: 8,
-                      terminals: 4,
-                      volume: 420000,
-                      costPerTon: 51.20,
-                      costPerTonPre: 58.50,
-                      currentCost: 2150400,
-                      currentCostPre: 2457000,
-                      preNuel: 2457000,
-                      executionRate: 78.3,
-                      untappedPotential: 720000,
-                      alerts: 4,
-                      status: 'warning',
-                    },
-                    {
-                      location: 'West',
-                      plants: 9,
-                      terminals: 5,
-                      volume: 600000,
-                      costPerTon: 35.40,
-                      costPerTonPre: 42.90,
-                      currentCost: 2124000,
-                      currentCostPre: 2574000,
-                      preNuel: 2574000,
-                      executionRate: 91.5,
-                      untappedPotential: 280000,
-                      alerts: 0,
-                      status: 'excellent',
-                    },
-                    {
-                      location: 'Southwest',
-                      plants: 7,
-                      terminals: 11,
-                      volume: 590000,
-                      costPerTon: 44.80,
-                      costPerTonPre: 52.30,
-                      currentCost: 2643200,
-                      currentCostPre: 3085700,
-                      preNuel: 3085700,
-                      executionRate: 82.5,
-                      untappedPotential: 442500,
-                      alerts: 3,
-                      status: 'good',
-                    },
-                    {
-                      location: 'Central',
-                      plants: 6,
-                      terminals: 8,
-                      volume: 520000,
-                      costPerTon: 46.30,
-                      costPerTonPre: 53.10,
-                      currentCost: 2407600,
-                      currentCostPre: 2761200,
-                      preNuel: 2761200,
-                      executionRate: 84.8,
-                      untappedPotential: 353600,
-                      alerts: 2,
-                      status: 'good',
-                    },
-                  ]}
+                  data={dynamicRegionalData.map(d => ({
+                    location: d.region,
+                    plants: d.region === 'Southeast' ? 5 : d.region === 'Midwest' ? 4 : d.region === 'West Coast' ? 5 : 3,
+                    terminals: d.region === 'Southeast' ? 2 : d.region === 'Midwest' ? 1 : d.region === 'West Coast' ? 1 : 2,
+                    volume: d.volume,
+                    costPerTon: Math.round(5000 + Math.random() * 500),
+                    costPerTonPre: Math.round(5500 + Math.random() * 500),
+                    currentCost: d.volume * 5280,
+                    currentCostPre: d.volume * 5850,
+                    preNuel: d.volume * 5850,
+                    executionRate: d.rate,
+                    untappedPotential: Math.round(d.savings * 0.11),
+                    alerts: d.status === 'excellent' ? 2 : d.status === 'good' ? 3 : 4,
+                    status: d.status,
+                  }))}
                 />
               )}
               </div>
@@ -389,46 +398,46 @@ export default function DashboardPage() {
                     icon: 'gas-pump',
                     title: 'Fuel Cost Impact',
                     description: 'Rising diesel fuel costs affecting transportation expenses',
-                    value: '+$12.5/Ton',
-                    secondaryValue: '+15.2%',
+                    value: '+$320/Shipment',
+                    secondaryValue: '+5.9%',
                     trend: 'up',
                   },
                   {
                     icon: 'trend-up',
-                    title: 'Inflation Impact',
-                    description: 'General inflation affecting operational costs',
-                    value: '+$4.3/Ton',
-                    secondaryValue: '+5.8%',
+                    title: 'Port Congestion',
+                    description: 'Increased wait times at major shipping ports',
+                    value: '+$180/Shipment',
+                    secondaryValue: '+3.3%',
                     trend: 'up',
                   },
                   {
                     icon: 'receipt',
-                    title: 'Tariff Impact',
-                    description: 'Import tariffs on specialty fertilizer components',
-                    value: '+$48.2/Ton',
-                    secondaryValue: '+11.4%',
+                    title: 'Cross-Border Compliance',
+                    description: 'Regulatory compliance costs for international shipments',
+                    value: '+$95/Shipment',
+                    secondaryValue: '+1.8%',
                     trend: 'up',
                   },
                   {
                     icon: 'train',
-                    title: 'Rail Service Improvement',
-                    description: 'Enhanced rail service reducing transportation costs',
-                    value: '+$3.1/Ton',
-                    secondaryValue: '4.2%',
+                    title: 'Route Optimization',
+                    description: 'AI-driven route optimization reducing transit times',
+                    value: '-$285/Shipment',
+                    secondaryValue: '-5.3%',
                     trend: 'down',
                   },
                   {
                     icon: 'sparkle',
-                    title: 'Nuel System Optimization',
-                    description: 'AI-driven logistics optimization reducing operational costs',
-                    value: '+$15.8/Ton',
-                    secondaryValue: '18.7%',
+                    title: 'Demand Forecasting',
+                    description: 'Predictive analytics improving capacity utilization',
+                    value: '-$425/Shipment',
+                    secondaryValue: '-7.8%',
                     trend: 'down',
                   },
                   {
                     title: 'Net Impact:',
                     description: '',
-                    value: '-$3.4/Ton',
+                    value: '-$115/Shipment',
                     secondaryValue: 'Combined factors (Nuel optimized)',
                     trend: 'down',
                     isNetImpact: true,
@@ -460,62 +469,66 @@ export default function DashboardPage() {
               />
 
               {/* Chart with Integrated Cards */}
-              <OptimizationRejectionsChart />
+              <OptimizationRejectionsChart
+                totalRejections={dynamicRejectionsData.totalRejections}
+                rejectedValueK={dynamicRejectionsData.rejectedValueK}
+                dataMultiplier={dynamicRejectionsData.dataMultiplier}
+              />
               </div>
             </FadeInSection>
 
             {/* KPI Cards Section */}
             <FadeInSection delay={300}>
-              <div className="flex gap-[12px] w-full">
+              <div className="grid grid-cols-4 gap-[12px] w-full">
                 <KPICard
                   icon="check-circle"
-                  title="Order Fulfillment Rate"
-                  value="94.2%"
+                  title="ETA Accuracy"
+                  value={`${dynamicKPIData.etaAccuracy}%`}
                   progressBar={{
-                    value: "94.2%",
-                    label: "Target 95%"
+                    value: `${dynamicKPIData.etaAccuracy}%`,
+                    label: "Target 94%"
                   }}
                   comparison={{
-                    preNuel: "78.5%",
-                    postNuel: "94.2%"
+                    preNuel: `${(parseFloat(dynamicKPIData.etaAccuracy) - 8.7).toFixed(1)}%`,
+                    postNuel: `${dynamicKPIData.etaAccuracy}%`
                   }}
                   variant="standard"
                 />
                 <KPICard
                   icon="package"
-                  title="Inventory Optimization"
-                  value="87.5%"
+                  title="Capacity Utilization"
+                  value={`${dynamicKPIData.capacityUtilization}%`}
                   progressBar={{
-                    value: "87.5%",
+                    value: `${dynamicKPIData.capacityUtilization}%`,
                     label: "Target 90%"
                   }}
                   comparison={{
-                    preNuel: "62.3%",
-                    postNuel: "87.5%"
+                    preNuel: `${(parseFloat(dynamicKPIData.capacityUtilization) - 15.2).toFixed(1)}%`,
+                    postNuel: `${dynamicKPIData.capacityUtilization}%`
                   }}
                   variant="standard"
                 />
                 <KPICard
                   icon="clock"
-                  title="Seasonal Readiness"
-                  value="92.8%"
+                  title="Q3 Peak Readiness"
+                  value={`${dynamicKPIData.peakReadiness}%`}
                   progressBar={{
-                    value: "92.8%",
-                    label: "Peak: March-June"
+                    value: `${dynamicKPIData.peakReadiness}%`,
+                    label: "Peak: Jul-Sep"
                   }}
                   comparison={{
-                    preNuel: "74.2%",
-                    postNuel: "92.8%"
+                    preNuel: `${(parseFloat(dynamicKPIData.peakReadiness) - 14.4).toFixed(1)}%`,
+                    postNuel: `${dynamicKPIData.peakReadiness}%`
                   }}
                   variant="standard"
                 />
                 <KPICard
                   icon="bell"
                   title="Active Alerts"
-                  value="2"
+                  value={`${dynamicKPIData.activeAlerts}`}
                   alertTags={[
-                    { label: "1 critical", color: "error" },
-                    { label: "1 warning", color: "warning" }
+                    { label: `${dynamicKPIData.criticalAlerts} critical`, color: "error" },
+                    { label: `${dynamicKPIData.warningAlerts} warning`, color: "warning" }
                   ]}
                   onReviewClick={() => console.log('Review alerts')}
                   variant="alert"
@@ -553,98 +566,21 @@ export default function DashboardPage() {
 
                 {/* Regional Performance Table */}
                 <RegionalPerformanceTable
-                  data={[
-                    {
-                      location: 'Midwest',
-                      plants: 12,
-                      terminals: 6,
-                      volume: 680000,
-                      costPerTon: 42.15,
-                      costPerTonPre: 48.20,
-                      currentCost: 2850000,
-                      currentCostPre: 3275000,
-                      preNuel: 3275000,
-                      executionRate: 89.2,
-                      untappedPotential: 420000,
-                      alerts: 2,
-                      status: 'good',
-                    },
-                    {
-                      location: 'Southeast',
-                      plants: 10,
-                      terminals: 5,
-                      volume: 750000,
-                      costPerTon: 38.75,
-                      costPerTonPre: 45.80,
-                      currentCost: 2906250,
-                      currentCostPre: 3435000,
-                      preNuel: 3435000,
-                      executionRate: 85.7,
-                      untappedPotential: 580000,
-                      alerts: 1,
-                      status: 'good',
-                    },
-                    {
-                      location: 'Northeast',
-                      plants: 8,
-                      terminals: 4,
-                      volume: 420000,
-                      costPerTon: 51.20,
-                      costPerTonPre: 58.50,
-                      currentCost: 2150400,
-                      currentCostPre: 2457000,
-                      preNuel: 2457000,
-                      executionRate: 78.3,
-                      untappedPotential: 720000,
-                      alerts: 4,
-                      status: 'warning',
-                    },
-                    {
-                      location: 'West',
-                      plants: 9,
-                      terminals: 5,
-                      volume: 600000,
-                      costPerTon: 35.40,
-                      costPerTonPre: 42.90,
-                      currentCost: 2124000,
-                      currentCostPre: 2574000,
-                      preNuel: 2574000,
-                      executionRate: 91.5,
-                      untappedPotential: 280000,
-                      alerts: 0,
-                      status: 'excellent',
-                    },
-                    {
-                      location: 'Southwest',
-                      plants: 7,
-                      terminals: 11,
-                      volume: 590000,
-                      costPerTon: 44.80,
-                      costPerTonPre: 52.30,
-                      currentCost: 2643200,
-                      currentCostPre: 3085700,
-                      preNuel: 3085700,
-                      executionRate: 82.5,
-                      untappedPotential: 442500,
-                      alerts: 3,
-                      status: 'good',
-                    },
-                    {
-                      location: 'Central',
-                      plants: 6,
-                      terminals: 8,
-                      volume: 520000,
-                      costPerTon: 46.30,
-                      costPerTonPre: 53.10,
-                      currentCost: 2407600,
-                      currentCostPre: 2761200,
-                      preNuel: 2761200,
-                      executionRate: 84.8,
-                      untappedPotential: 353600,
-                      alerts: 2,
-                      status: 'good',
-                    },
-                  ]}
+                  data={dynamicRegionalData.map(d => ({
+                    location: d.region,
+                    plants: d.region === 'Southeast' ? 5 : d.region === 'Midwest' ? 4 : d.region === 'West Coast' ? 5 : 3,
+                    terminals: d.region === 'Southeast' ? 2 : d.region === 'Midwest' ? 1 : d.region === 'West Coast' ? 1 : 2,
+                    volume: d.volume,
+                    costPerTon: Math.round(5000 + Math.random() * 500),
+                    costPerTonPre: Math.round(5500 + Math.random() * 500),
+                    currentCost: d.volume * 5280,
+                    currentCostPre: d.volume * 5850,
+                    preNuel: d.volume * 5850,
+                    executionRate: d.rate,
+                    untappedPotential: Math.round(d.savings * 0.11),
+                    alerts: d.status === 'excellent' ? 2 : d.status === 'good' ? 3 : 4,
+                    status: d.status,
+                  }))}
                 />
               </div>
             </FadeInSection>

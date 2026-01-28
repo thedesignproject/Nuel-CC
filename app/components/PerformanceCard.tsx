@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import {
   ArrowUpRight,
   ArrowDownRight,
@@ -143,60 +143,10 @@ export const PerformanceCard = React.forwardRef<HTMLDivElement, PerformanceCardP
     ref
   ) => {
     const statusStyles = getStatusStyles(status);
-    const [displayRate, setDisplayRate] = useState('0%');
-    const [isVisible, setIsVisible] = useState(false);
-    const cardRef = useRef<HTMLDivElement>(null);
-
-    // Subtle animation for execution rate
-    useEffect(() => {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting && !isVisible) {
-              setIsVisible(true);
-
-              const targetNum = parseFloat(executionRate.replace('%', ''));
-              const duration = 800; // 0.8 seconds
-              const startTime = Date.now();
-              const startNum = targetNum * 0.92; // Start from 92%
-
-              const animate = () => {
-                const elapsed = Date.now() - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-
-                const easeOut = 1 - Math.pow(1 - progress, 3);
-                const currentNum = startNum + (targetNum - startNum) * easeOut;
-
-                setDisplayRate(`${currentNum.toFixed(1)}%`);
-
-                if (progress < 1) {
-                  requestAnimationFrame(animate);
-                } else {
-                  setDisplayRate(executionRate);
-                }
-              };
-
-              setTimeout(() => requestAnimationFrame(animate), 100);
-            }
-          });
-        },
-        { threshold: 0.1 }
-      );
-
-      if (cardRef.current) {
-        observer.observe(cardRef.current);
-      }
-
-      return () => {
-        if (cardRef.current) {
-          observer.unobserve(cardRef.current);
-        }
-      };
-    }, [executionRate, isVisible]);
 
     return (
       <div
-        ref={cardRef}
+        ref={ref}
         className={className}
         style={{
           width: '100%',
@@ -363,7 +313,7 @@ export const PerformanceCard = React.forwardRef<HTMLDivElement, PerformanceCardP
                 color: COLORS.accent[500],
               }}
             >
-              {displayRate}
+              {executionRate}
             </div>
 
             {/* Volume with right border */}

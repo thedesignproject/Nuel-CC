@@ -51,27 +51,27 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
       handleModalClose();
     };
 
-    // Material icons
+    // Material icons for beverage industry
     const materialIcons = {
-      KTS: (
+      HFCS: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <circle cx="12" cy="12" r="8" fill="#FF3B30" opacity="0.2" />
           <circle cx="12" cy="12" r="4" fill="#FF3B30" />
         </svg>
       ),
-      KMS: (
+      CO2: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <circle cx="12" cy="12" r="8" fill={warning[500]} opacity="0.2" />
           <circle cx="12" cy="12" r="4" fill={warning[500]} />
         </svg>
       ),
-      'Thio-Sul': (
+      'Flavorings': (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <circle cx="12" cy="12" r="8" fill="#34C759" opacity="0.2" />
           <circle cx="12" cy="12" r="4" fill="#34C759" />
         </svg>
       ),
-      CropMax: (
+      Sweeteners: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <circle cx="12" cy="12" r="8" fill="#7F8FA4" opacity="0.2" />
           <circle cx="12" cy="12" r="4" fill="#7F8FA4" />
@@ -167,16 +167,16 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
           {activeTab === 'facility' ? (
             // By Facility View
             <>
-              {/* Lake Opal Terminal */}
+              {/* Houston Terminal */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* Facility Header */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <Factory size={20} weight="regular" color="#1C58F7" />
                   <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
-                    Lake Opal Terminal
+                    Houston Terminal
                   </p>
                   <p style={{ fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#7F8FA4', fontFamily: 'DM Sans' }}>
-                    Using 68% of total capacity — Target is at 85% capacity
+                    Using 50% of total capacity — Target is at 86% capacity
                   </p>
 
                   {/* Alert Badge */}
@@ -192,61 +192,61 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', paddingLeft: '28px' }}>
                   <ProgressBar
                     size="xl"
-                    name="KTS"
-                    icon={materialIcons.KTS}
-                    current={13487}
-                    target={18383}
-                    capacity={25207}
-                    percentage={47}
+                    name="HFCS"
+                    icon={materialIcons.HFCS}
+                    current={14}
+                    target={24}
+                    capacity={28}
+                    percentage={50}
                     status="critical"
-                    onSettingsClick={() => handleSettingsClick('KTS', 13487, 18383, 25207)}
+                    onSettingsClick={() => handleSettingsClick('HFCS', 14, 24, 28)}
                   />
                   <ProgressBar
                     size="xl"
-                    name="KMS"
-                    icon={materialIcons.KMS}
-                    current={16829}
-                    target={16481}
-                    capacity={23063}
-                    percentage={68}
+                    name="CO2"
+                    icon={materialIcons.CO2}
+                    current={18}
+                    target={20}
+                    capacity={25}
+                    percentage={72}
                     status="warning"
-                    onSettingsClick={() => handleSettingsClick('KMS', 16829, 16481, 23063)}
+                    onSettingsClick={() => handleSettingsClick('CO2', 18, 20, 25)}
                   />
                   <ProgressBar
                     size="xl"
-                    name="Thio-Sul"
-                    icon={materialIcons['Thio-Sul']}
-                    current={25673}
-                    target={26127}
-                    capacity={29628}
-                    percentage={83}
+                    name="Flavorings"
+                    icon={materialIcons['Flavorings']}
+                    current={22}
+                    target={24}
+                    capacity={28}
+                    percentage={79}
                     status="good"
-                    onSettingsClick={() => handleSettingsClick('Thio-Sul', 25673, 26127, 29628)}
+                    onSettingsClick={() => handleSettingsClick('Flavorings', 22, 24, 28)}
                   />
                   <ProgressBar
                     size="xl"
-                    name="CropMax"
-                    icon={materialIcons.CropMax}
+                    name="Sweeteners"
+                    icon={materialIcons.Sweeteners}
                     current={0}
                     target={0}
                     capacity={0}
                     status="warning"
                     warningMessage="No data available for this material/facility"
-                    onSettingsClick={() => handleSettingsClick('CropMax', 0, 0, 0)}
+                    onSettingsClick={() => handleSettingsClick('Sweeteners', 0, 0, 0)}
                   />
                 </div>
               </div>
 
-              {/* Lake Opal Plant */}
+              {/* Atlanta Hub */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* Facility Header with "All clear" badge */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <Factory size={20} weight="regular" color="#1C58F7" />
                   <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
-                    Lake Opal Plant
+                    Atlanta Hub
                   </p>
                   <p style={{ fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#7F8FA4', fontFamily: 'DM Sans' }}>
-                    Using 91% of total capacity — Target is at 93% capacity
+                    Using 91% of total capacity — Target is at 86% capacity
                   </p>
 
                   {/* All Clear Badge */}
@@ -263,9 +263,9 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
                   <ProgressBar
                     size="xl"
                     name=""
-                    current={17204}
-                    target={17684}
-                    capacity={21413}
+                    current={32}
+                    target={30}
+                    capacity={35}
                     percentage={91}
                     status="good"
                     showSettings={false}
@@ -273,23 +273,23 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
                 </div>
               </div>
 
-              {/* Second Lake Opal Terminal */}
+              {/* Chicago Processing */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* Facility Header */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <Factory size={20} weight="regular" color="#1C58F7" />
                   <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
-                    Lake Opal Terminal
+                    Chicago Processing
                   </p>
                   <p style={{ fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#7F8FA4', fontFamily: 'DM Sans' }}>
-                    Using 62% of total capacity — Target is at 85% capacity
+                    Using 90% of total capacity — Target is at 86% capacity
                   </p>
 
-                  {/* Alert Badge */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 8px', backgroundColor: warning[100], borderRadius: '6px', marginLeft: 'auto' }}>
-                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: warning[500] }} />
-                    <p style={{ fontSize: '12px', lineHeight: '20px', fontWeight: 500, color: warning[500], fontFamily: 'DM Sans' }}>
-                      1 Alert
+                  {/* All Clear Badge */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 8px', backgroundColor: '#D6F5E1', borderRadius: '6px', marginLeft: 'auto' }}>
+                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#34C759' }} />
+                    <p style={{ fontSize: '12px', lineHeight: '20px', fontWeight: 500, color: '#34C759', fontFamily: 'DM Sans' }}>
+                      All clear
                     </p>
                   </div>
                 </div>
@@ -299,11 +299,11 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
                   <ProgressBar
                     size="xl"
                     name=""
-                    current={11761}
-                    target={16402}
-                    capacity={18609}
-                    percentage={62}
-                    status="warning"
+                    current={38}
+                    target={36}
+                    capacity={42}
+                    percentage={90}
+                    status="good"
                     showSettings={false}
                   />
                 </div>
@@ -312,13 +312,13 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
           ) : (
             // By Material View
             <>
-              {/* KTS Material */}
+              {/* HFCS Material */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* Material Header */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  {materialIcons.KTS}
+                  {materialIcons.HFCS}
                   <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
-                    KTS (Potassium Thiosulfate)
+                    HFCS (High-Fructose Corn Syrup)
                   </p>
                   <p style={{ fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#7F8FA4', fontFamily: 'DM Sans' }}>
                     Using 45% of total capacity — Target is at 65% capacity
@@ -338,26 +338,26 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
                   <ProgressBar
                     size="xl"
                     name=""
-                    current={13487}
-                    target={18383}
-                    capacity={25207}
-                    percentage={47}
+                    current={45}
+                    target={65}
+                    capacity={100}
+                    percentage={45}
                     status="critical"
                     showSettings={false}
                   />
                 </div>
               </div>
 
-              {/* KMS Material */}
+              {/* CO2 Material */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* Material Header */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  {materialIcons.KMS}
+                  {materialIcons.CO2}
                   <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
-                    KMS (Potassium Magnesium Sulfate)
+                    CO2 (Carbon Dioxide)
                   </p>
                   <p style={{ fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#7F8FA4', fontFamily: 'DM Sans' }}>
-                    Using 68% of total capacity — Target is at 70% capacity
+                    Using 72% of total capacity — Target is at 80% capacity
                   </p>
 
                   {/* Alert Badge */}
@@ -374,26 +374,26 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
                   <ProgressBar
                     size="xl"
                     name=""
-                    current={16829}
-                    target={16481}
-                    capacity={23063}
-                    percentage={68}
+                    current={72}
+                    target={80}
+                    capacity={100}
+                    percentage={72}
                     status="warning"
                     showSettings={false}
                   />
                 </div>
               </div>
 
-              {/* Thio-Sul Material */}
+              {/* Flavorings Material */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* Material Header */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  {materialIcons['Thio-Sul']}
+                  {materialIcons['Flavorings']}
                   <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
-                    Thio-Sul (Ammonium Thiosulfate)
+                    Flavorings (Specialty Extracts)
                   </p>
                   <p style={{ fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#7F8FA4', fontFamily: 'DM Sans' }}>
-                    Using 83% of total capacity — Target is at 85% capacity
+                    Using 88% of total capacity — Target is at 85% capacity
                   </p>
 
                   {/* All Clear Badge */}
@@ -410,10 +410,10 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
                   <ProgressBar
                     size="xl"
                     name=""
-                    current={25673}
-                    target={26127}
-                    capacity={29628}
-                    percentage={83}
+                    current={88}
+                    target={85}
+                    capacity={100}
+                    percentage={88}
                     status="good"
                     showSettings={false}
                   />
@@ -503,7 +503,7 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
                     Current:
                   </span>
                   <span style={{ fontSize: '12px', color: '#17263D', fontFamily: 'DM Sans', fontWeight: 500 }}>
-                    {selectedMaterial.current.toLocaleString()} tons
+                    {selectedMaterial.current.toLocaleString()} shipments
                   </span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -511,7 +511,7 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
                     Capacity:
                   </span>
                   <span style={{ fontSize: '12px', color: '#17263D', fontFamily: 'DM Sans', fontWeight: 500 }}>
-                    {selectedMaterial.capacity.toLocaleString()} tons
+                    {selectedMaterial.capacity.toLocaleString()} shipments
                   </span>
                 </div>
               </div>

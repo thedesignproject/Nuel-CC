@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useCallback } from 'react';
 import { TopBar } from '../components/TopBar';
 import { Sidebar } from '../components/Sidebar';
 import { FileUploadPanel } from '../components/FileUploadPanel';
@@ -8,6 +9,16 @@ import { LAYOUT_SPACING } from '../design-tokens';
 
 export default function DataHubPage() {
   const { logout } = useAuth();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleFilterChange = useCallback((filters: { region: string; timeFrame: string; material: string }) => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      setRefreshKey(prev => prev + 1);
+      setIsRefreshing(false);
+    }, 300);
+  }, []);
   const handleFileUpload = (file: File) => {
     console.log('File uploaded:', file.name);
     // Handle file upload logic here
@@ -59,12 +70,13 @@ export default function DataHubPage() {
             <div className="sticky top-0 z-20" style={{ marginBottom: LAYOUT_SPACING.contentTopGap }}>
               <TopBar
                 title="Data Hub"
-                subtitle="Upload daily reports to keep Nuel system syncronized with the latest operational data"
+                subtitle="Upload daily reports to keep Nuel system synchronized with the latest operational data"
+                onFilterChange={handleFilterChange}
               />
             </div>
 
             {/* Page Content */}
-            <div className="flex flex-col gap-[24px]" style={{ overflowX: 'hidden' }}>
+            <div className={`flex flex-col gap-[24px] transition-opacity duration-200 ${isRefreshing ? 'opacity-50' : 'opacity-100'}`} key={refreshKey} style={{ overflowX: 'hidden' }}>
               {/* File Upload Panels */}
               <div
                 style={{

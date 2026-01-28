@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React from 'react';
 import { cn } from '@/lib/utils';
 import {
   DollarSign,
@@ -33,13 +33,11 @@ export interface MetricCardProps {
   };
   /** Additional className */
   className?: string;
-  /** Enable counting animation (default: true) */
-  enableAnimation?: boolean;
 }
 
 /**
  * MetricCard Component
- * Displays KPI metrics with counting animation
+ * Displays KPI metrics
  *
  * Specifications from Figma:
  * - Border Radius: 16px (CARD_CURVATURE token)
@@ -48,7 +46,6 @@ export interface MetricCardProps {
  * - Height: 170px
  * - Width: 100% (responsive in flex container)
  * - Gap between cards: 12px
- * - Animation: 1-2 second counting animation with ease-out
  */
 export const MetricCard = React.forwardRef<HTMLDivElement, MetricCardProps>(
   (
@@ -59,14 +56,9 @@ export const MetricCard = React.forwardRef<HTMLDivElement, MetricCardProps>(
       trend,
       comparison,
       className,
-      enableAnimation = false,
     },
     ref
   ) => {
-    const [displayValue, setDisplayValue] = useState('0');
-    const [isVisible, setIsVisible] = useState(false);
-    const cardRef = useRef<HTMLDivElement>(null);
-
     // Icon mapping
     const getIcon = () => {
       const iconProps = { size: 14, strokeWidth: 1.5 };
@@ -84,96 +76,12 @@ export const MetricCard = React.forwardRef<HTMLDivElement, MetricCardProps>(
       }
     };
 
-    // Extract numeric value for animation
-    const getNumericValue = (str: string): number => {
-      const cleaned = str.replace(/[$,%,]/g, '').replace(/,/g, '');
-      if (str.includes('M')) {
-        return parseFloat(cleaned.replace('M', '').replace('Tons', '').trim());
-      }
-      if (str.includes('Tons')) {
-        return parseFloat(cleaned.replace('Tons', '').trim());
-      }
-      return parseFloat(cleaned) || 0;
-    };
-
-    // Format the animated value back
-    const formatAnimatedValue = (num: number): string => {
-      if (value.includes('$') && value.includes(',') && num >= 1000000) {
-        return `$${Math.round(num).toLocaleString()}`;
-      } else if (value.includes('$')) {
-        return `$${num.toFixed(2)}`;
-      } else if (value.includes('%')) {
-        return `${num.toFixed(1)}%`;
-      } else if (value.includes('M')) {
-        return `${num.toFixed(2)}M Tons`;
-      }
-      return num.toString();
-    };
-
-    // Subtle number rolling animation - always enabled
-    useEffect(() => {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting && !isVisible) {
-              setIsVisible(true);
-
-              const targetNum = getNumericValue(value);
-              const duration = 800; // 0.8 seconds - subtle and quick
-              const startTime = Date.now();
-              const startNum = targetNum * 0.92; // Start from 92% of target - very subtle
-
-              const animate = () => {
-                const elapsed = Date.now() - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-
-                // Ease out cubic for smooth deceleration
-                const easeOut = 1 - Math.pow(1 - progress, 3);
-                const currentNum = startNum + (targetNum - startNum) * easeOut;
-
-                setDisplayValue(formatAnimatedValue(currentNum));
-
-                if (progress < 1) {
-                  requestAnimationFrame(animate);
-                } else {
-                  setDisplayValue(value); // Ensure exact final value
-                }
-              };
-
-              // Start animation after short delay
-              setTimeout(() => requestAnimationFrame(animate), 100);
-            }
-          });
-        },
-        { threshold: 0.1 }
-      );
-
-      if (cardRef.current) {
-        observer.observe(cardRef.current);
-      }
-
-      return () => {
-        if (cardRef.current) {
-          observer.unobserve(cardRef.current);
-        }
-      };
-    }, [value, enableAnimation]);
-
     return (
       <div
-        ref={(node) => {
-          cardRef.current = node;
-          if (typeof ref === 'function') {
-            ref(node);
-          } else if (ref) {
-            ref.current = node;
-          }
-        }}
+        ref={ref}
         className={cn(
           'bg-white flex flex-col gap-[12px] p-[16px] h-[170px] w-full',
           `rounded-[${CARD_CURVATURE}]`,
-          'transition-opacity duration-500 ease-out',
-          isVisible ? 'opacity-100' : 'opacity-0',
           className
         )}
       >
@@ -199,7 +107,7 @@ export const MetricCard = React.forwardRef<HTMLDivElement, MetricCardProps>(
         <div className="flex flex-col gap-[2px] w-full">
           {/* Main Value */}
           <p className="font-['DM_Sans'] font-bold text-[18px] leading-[26px] text-[#1C58F7]">
-            {displayValue}
+            {value}
           </p>
 
           {/* Insight Row */}

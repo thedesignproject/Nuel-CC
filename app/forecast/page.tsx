@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { TopBar } from '../components/TopBar';
 import { Sidebar } from '../components/Sidebar';
 import { ActivityAlertWidget } from '../components/ActivityAlertWidget';
@@ -33,7 +33,18 @@ export default function ForecastPage() {
   const [showResultsModal, setShowResultsModal] = useState(false);
   const [sandboxScenarios, setSandboxScenarios] = useState<any[]>([]);
   const [simulationResults, setSimulationResults] = useState<SimulationResults | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
   const { logout } = useAuth();
+
+  // Handle filter changes - creates visual refresh effect
+  const handleFilterChange = useCallback((filters: { region: string; timeFrame: string; material: string }) => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      setRefreshKey(prev => prev + 1);
+      setIsRefreshing(false);
+    }, 300);
+  }, []);
 
   // Handle toggle change - open modal when turning on
   const handleSandboxToggle = (isOn: boolean) => {
@@ -123,11 +134,12 @@ export default function ForecastPage() {
                 showSandboxToggle={true}
                 isSandboxMode={isSandboxMode}
                 onSandboxToggle={handleSandboxToggle}
+                onFilterChange={handleFilterChange}
               />
             </div>
 
             {/* Forecast Content */}
-            <div className="flex flex-col gap-[24px]">
+            <div className={`flex flex-col gap-[24px] transition-opacity duration-200 ${isRefreshing ? 'opacity-50' : 'opacity-100'}`} key={refreshKey}>
               {/* Activity Alert Widget */}
               <ActivityAlertWidget />
               {/* Tabs and Chart Section */}

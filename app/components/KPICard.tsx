@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import {
   CheckCircle,
   Package,
@@ -109,76 +109,18 @@ export const KPICard = React.forwardRef<HTMLDivElement, KPICardProps>(
     },
     ref
   ) => {
-    const [displayValue, setDisplayValue] = useState(value);
-    const [progressWidth, setProgressWidth] = useState(0);
-    const [isVisible, setIsVisible] = useState(false);
-    const cardRef = useRef<HTMLDivElement>(null);
-
-    // Subtle number animation
-    useEffect(() => {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting && !isVisible) {
-              setIsVisible(true);
-
-              // Animate number
-              if (value.includes('%') && variant === 'standard') {
-                const targetNum = parseFloat(value.replace('%', ''));
-                const duration = 800;
-                const startTime = Date.now();
-                const startNum = targetNum - 2; // Animate last 2%
-
-                const animate = () => {
-                  const elapsed = Date.now() - startTime;
-                  const progress = Math.min(elapsed / duration, 1);
-                  const easeOut = 1 - Math.pow(1 - progress, 3);
-                  const currentNum = startNum + (targetNum - startNum) * easeOut;
-
-                  setDisplayValue(`${currentNum.toFixed(1)}%`);
-
-                  if (progress < 1) {
-                    requestAnimationFrame(animate);
-                  } else {
-                    setDisplayValue(value);
-                  }
-                };
-
-                setTimeout(() => requestAnimationFrame(animate), 100);
-              }
-
-              // Animate progress bar
-              if (progressBar && variant === 'standard') {
-                const targetWidth = parseFloat(value.replace('%', ''));
-                const targetProgress = (targetWidth / 100) * 80; // 80px max width
-
-                setTimeout(() => {
-                  setProgressWidth(targetProgress);
-                }, 200);
-              }
-            }
-          });
-        },
-        { threshold: 0.1 }
-      );
-
-      if (cardRef.current) {
-        observer.observe(cardRef.current);
-      }
-
-      return () => {
-        if (cardRef.current) {
-          observer.unobserve(cardRef.current);
-        }
-      };
-    }, [value, isVisible, variant, progressBar]);
+    // Calculate progress width directly from value
+    const progressWidth = progressBar && variant === 'standard'
+      ? (parseFloat(value.replace('%', '')) / 100) * 80
+      : 0;
 
     return (
       <div
-        ref={cardRef}
+        ref={ref}
         className={className}
         style={{
-          width: variant === 'alert' ? '310.25px' : '280.25px',
+          flex: 1,
+          minWidth: '200px',
           height: variant === 'alert' ? '176px' : 'auto',
           backgroundColor: COLORS.neutral[0],
           borderRadius: CARD_CURVATURE,
@@ -256,7 +198,7 @@ export const KPICard = React.forwardRef<HTMLDivElement, KPICardProps>(
                   color: COLORS.accent[500],
                 }}
               >
-                {displayValue}
+                {value}
               </div>
 
               {/* Progress Bar */}

@@ -32,19 +32,20 @@ interface ChartDataPoint {
 // DATA
 // ============================================
 
+// Beverage industry logistics cost data ($ thousands per month)
 const chartData: ChartDataPoint[] = [
-  { month: 'Jan', preNuel: 265, nuelOptimization: 238 },
-  { month: 'Feb', preNuel: 278, nuelOptimization: 225 },
-  { month: 'Mar', preNuel: 255, nuelOptimization: 218 },
-  { month: 'Apr', preNuel: 270, nuelOptimization: 202 },
-  { month: 'May', preNuel: 248, nuelOptimization: 198 },
-  { month: 'Jun', preNuel: 275, nuelOptimization: 215 },
-  { month: 'Jul', preNuel: 252, nuelOptimization: 195 },
-  { month: 'Aug', preNuel: 268, nuelOptimization: 188 },
-  { month: 'Sep', preNuel: 242, nuelOptimization: 182 },
-  { month: 'Oct', preNuel: 260, nuelOptimization: 165 },
-  { month: 'Nov', preNuel: 235, nuelOptimization: 172 },
-  { month: 'Dec', preNuel: 258, nuelOptimization: 158 },
+  { month: 'Jan', preNuel: 485, nuelOptimization: 428 },
+  { month: 'Feb', preNuel: 512, nuelOptimization: 445 },
+  { month: 'Mar', preNuel: 498, nuelOptimization: 432 },
+  { month: 'Apr', preNuel: 525, nuelOptimization: 448 },
+  { month: 'May', preNuel: 568, nuelOptimization: 475 },
+  { month: 'Jun', preNuel: 612, nuelOptimization: 502 },
+  { month: 'Jul', preNuel: 645, nuelOptimization: 518 },
+  { month: 'Aug', preNuel: 632, nuelOptimization: 495 },
+  { month: 'Sep', preNuel: 578, nuelOptimization: 462 },
+  { month: 'Oct', preNuel: 542, nuelOptimization: 438 },
+  { month: 'Nov', preNuel: 498, nuelOptimization: 412 },
+  { month: 'Dec', preNuel: 465, nuelOptimization: 385 },
 ];
 
 // ============================================

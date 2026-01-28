@@ -32,90 +32,90 @@ export interface UntappedPotentialTableProps {
 
 const UNTAPPED_POTENTIAL_DATA: UntappedPotentialRow[] = [
   {
-    orderId: 'MO-2024-001',
-    date: '12/14/2025',
-    region: 'Northeast',
-    manager: 'Sarah Johnson',
-    optimizationType: 'Route Optimization',
-    missedSavings: '$8,500',
+    orderId: 'BV-2026-001',
+    date: '01/14/2026',
+    region: 'Southwest',
+    manager: 'Marcus Thompson',
+    optimizationType: 'HFCS Sourcing',
+    missedSavings: '$12,500',
     reasonCategory: 'Capacity Constraints',
     priority: 'high',
     status: 'justified',
   },
   {
-    orderId: 'MO-2024-002',
-    date: '12/11/2025',
+    orderId: 'BV-2026-002',
+    date: '01/11/2026',
     region: 'Midwest',
-    manager: 'Mike Chen',
-    optimizationType: 'Carrier Selection',
-    missedSavings: '$3,200',
-    reasonCategory: 'Risk Management',
+    manager: 'Jennifer Lee',
+    optimizationType: 'CO₂ Distribution',
+    missedSavings: '$4,800',
+    reasonCategory: 'Quality Concerns',
     priority: 'medium',
     status: 'justified',
   },
   {
-    orderId: 'MO-2024-003',
-    date: '12/9/2025',
+    orderId: 'BV-2026-003',
+    date: '01/09/2026',
     region: 'Southeast',
-    manager: 'Lisa Rodriguez',
-    optimizationType: 'Inventory Positioning',
-    missedSavings: '$12,000',
-    reasonCategory: 'Operational Concerns',
-    priority: 'low',
+    manager: 'Robert Williams',
+    optimizationType: 'Extract Inventory',
+    missedSavings: '$15,200',
+    reasonCategory: 'Supplier Lead Time',
+    priority: 'high',
     status: 'under-review',
   },
   {
-    orderId: 'MO-2024-004',
-    date: '12/7/2025',
-    region: 'West',
-    manager: 'David Park',
-    optimizationType: 'Mode Optimization',
-    missedSavings: '$5,800',
+    orderId: 'BV-2026-004',
+    date: '01/07/2026',
+    region: 'West Coast',
+    manager: 'Emily Chen',
+    optimizationType: 'Carrier Selection',
+    missedSavings: '$6,400',
     reasonCategory: 'Service Requirements',
     priority: 'medium',
     status: 'justified',
   },
   {
-    orderId: 'MO-2024-005',
-    date: '12/4/2025',
+    orderId: 'BV-2026-005',
+    date: '01/04/2026',
     region: 'Northeast',
-    manager: 'Sarah Johnson',
-    optimizationType: 'Route Optimization',
-    missedSavings: '$4,200',
+    manager: 'David Martinez',
+    optimizationType: 'Route Consolidation',
+    missedSavings: '$5,100',
     reasonCategory: 'Timeline Issues',
     priority: 'medium',
     status: 'justified',
   },
   {
-    orderId: 'MO-2024-006',
-    date: '12/2/2025',
+    orderId: 'BV-2026-006',
+    date: '01/02/2026',
     region: 'Midwest',
-    manager: 'Mike Chen',
-    optimizationType: 'Carrier Selection',
-    missedSavings: '$1,800',
-    reasonCategory: 'Risk Management',
+    manager: 'Jennifer Lee',
+    optimizationType: 'Sweetener Blending',
+    missedSavings: '$2,900',
+    reasonCategory: 'Production Schedule',
     priority: 'low',
     status: 'justified',
   },
   {
-    orderId: 'MO-2024-007',
-    date: '11/30/2025',
+    orderId: 'BV-2026-007',
+    date: '12/30/2025',
     region: 'Southeast',
-    manager: 'Lisa Rodriguez',
-    optimizationType: 'Inventory Positioning',
-    missedSavings: '$9,500',
+    manager: 'Robert Williams',
+    optimizationType: 'Terminal Transfer',
+    missedSavings: '$11,800',
     reasonCategory: 'Budget Constraints',
     priority: 'high',
     status: 'needs-review',
   },
   {
-    orderId: 'MO-2024-008',
-    date: '11/27/2025',
-    region: 'West',
-    manager: 'David Park',
-    optimizationType: 'Mode Optimization',
-    missedSavings: '$7,200',
-    reasonCategory: 'Service Requirements',
+    orderId: 'BV-2026-008',
+    date: '12/27/2025',
+    region: 'West Coast',
+    manager: 'Emily Chen',
+    optimizationType: 'Citric Acid Sourcing',
+    missedSavings: '$8,600',
+    reasonCategory: 'Regulatory Compliance',
     priority: 'high',
     status: 'justified',
   },
@@ -133,7 +133,6 @@ export const UntappedPotentialTable = React.forwardRef<HTMLDivElement, UntappedP
     const [categoryFilter, setCategoryFilter] = useState('All categories');
     const [priorityFilter, setPriorityFilter] = useState('All priorities');
     const [statusFilter, setStatusFilter] = useState('All status');
-    const [currentPage, setCurrentPage] = useState(1);
 
     const getStatusVariant = (status: string) => {
       switch (status) {
@@ -436,102 +435,24 @@ export const UntappedPotentialTable = React.forwardRef<HTMLDivElement, UntappedP
           </table>
         </div>
 
-        {/* Pagination */}
+        {/* Simple page indicator - no pagination */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: '8px',
             padding: '16px',
           }}
         >
-          <button
-            onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-            disabled={currentPage === 1}
-            style={{
-              fontFamily: 'DM Sans',
-              fontSize: '14px',
-              fontWeight: 500,
-              color: currentPage === 1 ? '#C3CDD9' : '#7F8FA4',
-              background: 'none',
-              border: 'none',
-              cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-              padding: '8px 12px',
-            }}
-          >
-            Previous
-          </button>
-
-          {[1, 2, 3].map((page) => (
-            <button
-              key={page}
-              onClick={() => setCurrentPage(page)}
-              style={{
-                fontFamily: 'DM Sans',
-                fontSize: '14px',
-                fontWeight: 500,
-                color: currentPage === page ? '#1C58F7' : '#7F8FA4',
-                background: currentPage === page ? '#EAF1FF' : 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                padding: '8px 12px',
-                borderRadius: '8px',
-                minWidth: '36px',
-              }}
-            >
-              {page}
-            </button>
-          ))}
-
           <span
             style={{
               fontFamily: 'DM Sans',
               fontSize: '14px',
               color: '#7F8FA4',
-              padding: '8px 4px',
             }}
           >
-            ...
+            Showing all {UNTAPPED_POTENTIAL_DATA.length} entries
           </span>
-
-          {[65, 66].map((page) => (
-            <button
-              key={page}
-              onClick={() => setCurrentPage(page)}
-              style={{
-                fontFamily: 'DM Sans',
-                fontSize: '14px',
-                fontWeight: 500,
-                color: currentPage === page ? '#1C58F7' : '#7F8FA4',
-                background: currentPage === page ? '#EAF1FF' : 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                padding: '8px 12px',
-                borderRadius: '8px',
-                minWidth: '36px',
-              }}
-            >
-              {page}
-            </button>
-          ))}
-
-          <button
-            onClick={() => setCurrentPage(Math.min(66, currentPage + 1))}
-            disabled={currentPage === 66}
-            style={{
-              fontFamily: 'DM Sans',
-              fontSize: '14px',
-              fontWeight: 500,
-              color: currentPage === 66 ? '#C3CDD9' : '#7F8FA4',
-              background: 'none',
-              border: 'none',
-              cursor: currentPage === 66 ? 'not-allowed' : 'pointer',
-              padding: '8px 12px',
-            }}
-          >
-            Next
-          </button>
         </div>
 
         {/* Custom Scrollbar Styles */}
