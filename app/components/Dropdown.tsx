@@ -118,7 +118,7 @@ export const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>(
 
         {/* Dropdown Menu */}
         {isOpen && (
-          <div className="absolute top-full mt-[4px] w-full bg-white rounded-[12px] shadow-lg border border-[#E5E7EB] overflow-hidden z-50">
+          <div className="absolute top-full mt-[4px] w-full bg-white rounded-[12px] shadow-lg border border-[#E5E7EB] overflow-hidden z-[9999]">
             {options.map((option) => (
               <button
                 key={option.value}

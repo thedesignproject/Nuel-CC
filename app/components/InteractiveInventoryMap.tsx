@@ -119,7 +119,7 @@ export const InteractiveInventoryMap = React.forwardRef<HTMLDivElement, Interact
         }}
       >
         {/* Section Header with Dropdowns */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '24px', width: '100%' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '24px', width: '100%', position: 'relative', zIndex: 1000 }}>
           {/* Left: Title Section */}
           <div style={{ display: 'flex', gap: '8px', flex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'start', paddingTop: '3px' }}>
