@@ -33,7 +33,7 @@ export const plantLocations: PlantLocation[] = [
   },
   {
     id: 'nashville-bottler',
-    name: 'Nashville Bottler',
+    name: 'Nashville Facility',
     type: 'Plant',
     coordinates: [36.1627, -86.7816], // Nashville, Tennessee
     capacity: 35,
@@ -45,7 +45,7 @@ export const plantLocations: PlantLocation[] = [
   },
   {
     id: 'charlotte-plant',
-    name: 'Charlotte Bottler',
+    name: 'Charlotte Facility',
     type: 'Plant',
     coordinates: [35.2271, -80.8431], // Charlotte, North Carolina
     capacity: 28,
@@ -69,7 +69,7 @@ export const plantLocations: PlantLocation[] = [
   },
   {
     id: 'tampa-bottler',
-    name: 'Tampa Bottler',
+    name: 'Tampa Facility',
     type: 'Plant',
     coordinates: [27.9506, -82.4572], // Tampa, Florida
     capacity: 22,
@@ -82,7 +82,7 @@ export const plantLocations: PlantLocation[] = [
   // MIDWEST REGION
   {
     id: 'midwest-hfcs',
-    name: 'Midwest HFCS Facility',
+    name: 'Central Facility',
     type: 'Plant',
     coordinates: [41.5868, -93.6250], // Des Moines, Iowa
     capacity: 55,
@@ -106,7 +106,7 @@ export const plantLocations: PlantLocation[] = [
   },
   {
     id: 'detroit-bottler',
-    name: 'Detroit Bottler',
+    name: 'Detroit Facility',
     type: 'Plant',
     coordinates: [42.3314, -83.0458], // Detroit, Michigan
     capacity: 30,
@@ -118,7 +118,7 @@ export const plantLocations: PlantLocation[] = [
   },
   {
     id: 'minneapolis-bottler',
-    name: 'Minneapolis Bottler',
+    name: 'Minneapolis Facility',
     type: 'Plant',
     coordinates: [44.9778, -93.2650], // Minneapolis, Minnesota
     capacity: 25,
@@ -143,7 +143,7 @@ export const plantLocations: PlantLocation[] = [
   // WEST COAST REGION
   {
     id: 'la-bottler',
-    name: 'Los Angeles Bottler',
+    name: 'Los Angeles Facility',
     type: 'Plant',
     coordinates: [34.0522, -118.2437], // Los Angeles, California
     capacity: 48,
@@ -155,7 +155,7 @@ export const plantLocations: PlantLocation[] = [
   },
   {
     id: 'sf-bottler',
-    name: 'San Francisco Bottler',
+    name: 'San Francisco Facility',
     type: 'Plant',
     coordinates: [37.7749, -122.4194], // San Francisco, California
     capacity: 32,
@@ -167,7 +167,7 @@ export const plantLocations: PlantLocation[] = [
   },
   {
     id: 'seattle-bottler',
-    name: 'Seattle Bottler',
+    name: 'Seattle Facility',
     type: 'Plant',
     coordinates: [47.6062, -122.3321], // Seattle, Washington
     capacity: 26,
@@ -191,7 +191,7 @@ export const plantLocations: PlantLocation[] = [
   },
   {
     id: 'sacramento-bottler',
-    name: 'Sacramento Bottler',
+    name: 'Sacramento Facility',
     type: 'Plant',
     coordinates: [38.5816, -121.4944], // Sacramento, California
     capacity: 22,
@@ -228,7 +228,7 @@ export const plantLocations: PlantLocation[] = [
   },
   {
     id: 'phoenix-bottler',
-    name: 'Phoenix Bottler',
+    name: 'Phoenix Facility',
     type: 'Plant',
     coordinates: [33.4484, -112.0740], // Phoenix, Arizona
     capacity: 30,
@@ -240,7 +240,7 @@ export const plantLocations: PlantLocation[] = [
   },
   {
     id: 'san-antonio-bottler',
-    name: 'San Antonio Bottler',
+    name: 'San Antonio Facility',
     type: 'Plant',
     coordinates: [29.4241, -98.4936], // San Antonio, Texas
     capacity: 25,
@@ -252,7 +252,7 @@ export const plantLocations: PlantLocation[] = [
   },
   {
     id: 'austin-bottler',
-    name: 'Austin Bottler',
+    name: 'Austin Facility',
     type: 'Plant',
     coordinates: [30.2672, -97.7431], // Austin, Texas
     capacity: 20,
@@ -289,7 +289,7 @@ export const plantLocations: PlantLocation[] = [
   },
   {
     id: 'boston-bottler',
-    name: 'Boston Bottler',
+    name: 'Boston Facility',
     type: 'Plant',
     coordinates: [42.3601, -71.0589], // Boston, Massachusetts
     capacity: 28,
@@ -301,7 +301,7 @@ export const plantLocations: PlantLocation[] = [
   },
   {
     id: 'philadelphia-bottler',
-    name: 'Philadelphia Bottler',
+    name: 'Philadelphia Facility',
     type: 'Plant',
     coordinates: [39.9526, -75.1652], // Philadelphia, Pennsylvania
     capacity: 32,
@@ -313,7 +313,7 @@ export const plantLocations: PlantLocation[] = [
   },
   {
     id: 'baltimore-bottler',
-    name: 'Baltimore Bottler',
+    name: 'Baltimore Facility',
     type: 'Plant',
     coordinates: [39.2904, -76.6122], // Baltimore, Maryland
     capacity: 24,
@@ -326,7 +326,7 @@ export const plantLocations: PlantLocation[] = [
   // MOUNTAIN REGION
   {
     id: 'denver-bottler',
-    name: 'Denver Bottler',
+    name: 'Denver Facility',
     type: 'Plant',
     coordinates: [39.7392, -104.9903], // Denver, Colorado
     capacity: 26,

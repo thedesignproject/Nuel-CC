@@ -78,15 +78,15 @@ export const TopBar = React.forwardRef<HTMLDivElement, TopBarProps>(
       { value: 'Last 6 Months', label: 'Last 6 Months' },
     ];
 
-    // Beverage Industry Materials
+    // Generic Material Categories
     const materialOptions: DropdownOption[] = [
       { value: 'All Materials', label: 'All Materials' },
-      { value: 'HFCS', label: 'HFCS' },
-      { value: 'CO₂', label: 'CO₂' },
-      { value: 'Caramel Color', label: 'Caramel Color' },
-      { value: 'Phosphoric Acid', label: 'Phosphoric Acid' },
-      { value: 'Cola Extract', label: 'Cola Extract' },
-      { value: 'Citric Acid', label: 'Citric Acid' },
+      { value: 'Raw Material A', label: 'Raw Material A' },
+      { value: 'Raw Material B', label: 'Raw Material B' },
+      { value: 'Component C', label: 'Component C' },
+      { value: 'Component D', label: 'Component D' },
+      { value: 'Additive E', label: 'Additive E' },
+      { value: 'Additive F', label: 'Additive F' },
     ];
 
     // Handle filter changes with callback

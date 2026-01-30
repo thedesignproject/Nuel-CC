@@ -51,27 +51,27 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
       handleModalClose();
     };
 
-    // Material icons for beverage industry
+    // Material icons for supply chain
     const materialIcons = {
-      HFCS: (
+      'Raw Material A': (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <circle cx="12" cy="12" r="8" fill="#FF3B30" opacity="0.2" />
           <circle cx="12" cy="12" r="4" fill="#FF3B30" />
         </svg>
       ),
-      CO2: (
+      'Raw Material B': (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <circle cx="12" cy="12" r="8" fill={warning[500]} opacity="0.2" />
           <circle cx="12" cy="12" r="4" fill={warning[500]} />
         </svg>
       ),
-      'Flavorings': (
+      'Additive E': (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <circle cx="12" cy="12" r="8" fill="#34C759" opacity="0.2" />
           <circle cx="12" cy="12" r="4" fill="#34C759" />
         </svg>
       ),
-      Sweeteners: (
+      'Additive F': (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <circle cx="12" cy="12" r="8" fill="#7F8FA4" opacity="0.2" />
           <circle cx="12" cy="12" r="4" fill="#7F8FA4" />
@@ -167,13 +167,13 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
           {activeTab === 'facility' ? (
             // By Facility View
             <>
-              {/* Houston Terminal */}
+              {/* Southern Terminal */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* Facility Header */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <Factory size={20} weight="regular" color="#1C58F7" />
                   <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
-                    Houston Terminal
+                    Southern Terminal
                   </p>
                   <p style={{ fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#7F8FA4', fontFamily: 'DM Sans' }}>
                     Using 50% of total capacity — Target is at 86% capacity
@@ -192,58 +192,58 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', paddingLeft: '28px' }}>
                   <ProgressBar
                     size="xl"
-                    name="HFCS"
-                    icon={materialIcons.HFCS}
+                    name="Raw Material A"
+                    icon={materialIcons['Raw Material A']}
                     current={14}
                     target={24}
                     capacity={28}
                     percentage={50}
                     status="critical"
-                    onSettingsClick={() => handleSettingsClick('HFCS', 14, 24, 28)}
+                    onSettingsClick={() => handleSettingsClick('Raw Material A', 14, 24, 28)}
                   />
                   <ProgressBar
                     size="xl"
-                    name="CO2"
-                    icon={materialIcons.CO2}
+                    name="Raw Material B"
+                    icon={materialIcons['Raw Material B']}
                     current={18}
                     target={20}
                     capacity={25}
                     percentage={72}
                     status="warning"
-                    onSettingsClick={() => handleSettingsClick('CO2', 18, 20, 25)}
+                    onSettingsClick={() => handleSettingsClick('Raw Material B', 18, 20, 25)}
                   />
                   <ProgressBar
                     size="xl"
-                    name="Flavorings"
-                    icon={materialIcons['Flavorings']}
+                    name="Additive E"
+                    icon={materialIcons['Additive E']}
                     current={22}
                     target={24}
                     capacity={28}
                     percentage={79}
                     status="good"
-                    onSettingsClick={() => handleSettingsClick('Flavorings', 22, 24, 28)}
+                    onSettingsClick={() => handleSettingsClick('Additive E', 22, 24, 28)}
                   />
                   <ProgressBar
                     size="xl"
-                    name="Sweeteners"
-                    icon={materialIcons.Sweeteners}
+                    name="Additive F"
+                    icon={materialIcons['Additive F']}
                     current={0}
                     target={0}
                     capacity={0}
                     status="warning"
                     warningMessage="No data available for this material/facility"
-                    onSettingsClick={() => handleSettingsClick('Sweeteners', 0, 0, 0)}
+                    onSettingsClick={() => handleSettingsClick('Additive F', 0, 0, 0)}
                   />
                 </div>
               </div>
 
-              {/* Atlanta Hub */}
+              {/* Regional Hub */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* Facility Header with "All clear" badge */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <Factory size={20} weight="regular" color="#1C58F7" />
                   <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
-                    Atlanta Hub
+                    Regional Hub
                   </p>
                   <p style={{ fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#7F8FA4', fontFamily: 'DM Sans' }}>
                     Using 91% of total capacity — Target is at 86% capacity
@@ -273,13 +273,13 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
                 </div>
               </div>
 
-              {/* Chicago Processing */}
+              {/* Midwest Processing */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* Facility Header */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <Factory size={20} weight="regular" color="#1C58F7" />
                   <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
-                    Chicago Processing
+                    Midwest Processing
                   </p>
                   <p style={{ fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#7F8FA4', fontFamily: 'DM Sans' }}>
                     Using 90% of total capacity — Target is at 86% capacity
@@ -312,13 +312,13 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
           ) : (
             // By Material View
             <>
-              {/* HFCS Material */}
+              {/* Raw Material A */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* Material Header */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  {materialIcons.HFCS}
+                  {materialIcons['Raw Material A']}
                   <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
-                    HFCS (High-Fructose Corn Syrup)
+                    Raw Material A
                   </p>
                   <p style={{ fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#7F8FA4', fontFamily: 'DM Sans' }}>
                     Using 45% of total capacity — Target is at 65% capacity
@@ -348,13 +348,13 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
                 </div>
               </div>
 
-              {/* CO2 Material */}
+              {/* Raw Material B */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* Material Header */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  {materialIcons.CO2}
+                  {materialIcons['Raw Material B']}
                   <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
-                    CO2 (Carbon Dioxide)
+                    Raw Material B
                   </p>
                   <p style={{ fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#7F8FA4', fontFamily: 'DM Sans' }}>
                     Using 72% of total capacity — Target is at 80% capacity
@@ -384,13 +384,13 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
                 </div>
               </div>
 
-              {/* Flavorings Material */}
+              {/* Additive E */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* Material Header */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  {materialIcons['Flavorings']}
+                  {materialIcons['Additive E']}
                   <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
-                    Flavorings (Specialty Extracts)
+                    Additive E
                   </p>
                   <p style={{ fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#7F8FA4', fontFamily: 'DM Sans' }}>
                     Using 88% of total capacity — Target is at 85% capacity

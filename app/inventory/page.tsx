@@ -68,7 +68,7 @@ export default function InventoryPage() {
             <div className="sticky top-0 z-20" style={{ marginBottom: LAYOUT_SPACING.contentTopGap }}>
               <TopBar
                 title="Inventory Management"
-                subtitle="Complete visibility and control of beverage materials inventory across all facilities"
+                subtitle="Complete visibility and control of materials inventory across all facilities"
                 onFilterChange={handleFilterChange}
               />
             </div>

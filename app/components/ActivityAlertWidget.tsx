@@ -29,8 +29,8 @@ export const ActivityAlertWidget = React.forwardRef<HTMLDivElement, ActivityAler
       {
         id: '1',
         severity: 'critical' as const,
-        title: 'Houston Terminal Capacity Below 50%',
-        description: 'HFCS inventory at critical levels - forecasted demand exceeding supply by 2,800 units over next 8 weeks',
+        title: 'Southern Terminal Capacity Below 50%',
+        description: 'Raw Material A inventory at critical levels - forecasted demand exceeding supply by 2,800 units over next 8 weeks',
         status: 'critical' as const,
         statusLabel: 'Critical',
         region: 'North America',
@@ -40,8 +40,8 @@ export const ActivityAlertWidget = React.forwardRef<HTMLDivElement, ActivityAler
       {
         id: '2',
         severity: 'warning' as const,
-        title: 'ETA Adjustment: Shanghai-LA Shipment',
-        description: 'Port congestion at Los Angeles causing 6-8 hour delay on reefer container shipment',
+        title: 'ETA Adjustment: Overseas Shipment',
+        description: 'Port congestion at Los Angeles causing 6-8 hour delay on container shipment',
         status: 'warning' as const,
         statusLabel: 'Warning',
         region: 'Asia-Pacific',

@@ -45,12 +45,12 @@ const getFilterMultiplier = (filters: { region: string; timeFrame: string; mater
   // Material multipliers
   const materialMultipliers: Record<string, number> = {
     'All Materials': 1,
-    'HFCS': 0.35,
-    'CO₂': 0.18,
-    'Caramel Color': 0.12,
-    'Phosphoric Acid': 0.15,
-    'Cola Extract': 0.08,
-    'Citric Acid': 0.12,
+    'Raw Material A': 0.35,
+    'Raw Material B': 0.18,
+    'Component C': 0.12,
+    'Component D': 0.15,
+    'Additive E': 0.08,
+    'Additive F': 0.12,
   };
 
   multiplier *= regionMultipliers[filters.region] || 1;

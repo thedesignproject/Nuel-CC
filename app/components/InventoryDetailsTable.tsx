@@ -46,8 +46,8 @@ export interface InventoryDetailsTableProps {
 
 const INVENTORY_DATA: InventoryDetailRow[] = [
   {
-    facility: { name: 'Houston Terminal', location: 'Houston, TX' },
-    material: 'HFCS',
+    facility: { name: 'Southern Terminal', location: 'Houston, TX' },
+    material: 'Raw Material A',
     currentStock: { value: '25,400 Gal', subtitle: '48% of capacity' },
     costPerTon: { value: '$0.45/lb', subtitle: 'Pre: $0.52/lb' },
     target: { value: '45,000 Gal', subtitle: '86% of capacity' },
@@ -56,8 +56,8 @@ const INVENTORY_DATA: InventoryDetailRow[] = [
     cause: 'Supply disruption',
   },
   {
-    facility: { name: 'Atlanta Hub', location: 'Atlanta, GA' },
-    material: 'CO₂',
+    facility: { name: 'Regional Hub', location: 'Atlanta, GA' },
+    material: 'Raw Material B',
     currentStock: { value: '42,000 kg', subtitle: '93% of capacity' },
     costPerTon: { value: '$0.12/kg', subtitle: 'Pre: $0.14/kg' },
     target: { value: '40,000 kg', subtitle: '89% of capacity' },
@@ -66,8 +66,8 @@ const INVENTORY_DATA: InventoryDetailRow[] = [
     cause: '—',
   },
   {
-    facility: { name: 'Los Angeles Bottler', location: 'Los Angeles, CA' },
-    material: 'Caramel Color',
+    facility: { name: 'Los Angeles Facility', location: 'Los Angeles, CA' },
+    material: 'Component C',
     currentStock: { value: '18,500 Gal', subtitle: '62% of capacity' },
     costPerTon: { value: '$2.85/lb', subtitle: 'Pre: $3.15/lb' },
     target: { value: '25,000 Gal', subtitle: '84% of capacity' },
@@ -76,8 +76,8 @@ const INVENTORY_DATA: InventoryDetailRow[] = [
     cause: 'Demand spike',
   },
   {
-    facility: { name: 'Chicago Processing', location: 'Chicago, IL' },
-    material: 'Phosphoric Acid',
+    facility: { name: 'Midwest Processing', location: 'Chicago, IL' },
+    material: 'Component D',
     currentStock: { value: '38,200 Gal', subtitle: '91% of capacity' },
     costPerTon: { value: '$0.68/lb', subtitle: 'Pre: $0.75/lb' },
     target: { value: '36,000 Gal', subtitle: '86% of capacity' },
@@ -86,8 +86,8 @@ const INVENTORY_DATA: InventoryDetailRow[] = [
     cause: '—',
   },
   {
-    facility: { name: 'Newark Terminal', location: 'Newark, NJ' },
-    material: 'Cola Extract',
+    facility: { name: 'Eastern Terminal', location: 'Newark, NJ' },
+    material: 'Additive E',
     currentStock: { value: '8,400 Gal', subtitle: '42% of capacity' },
     costPerTon: { value: '$15.80/Gal', subtitle: 'Pre: $17.20/Gal' },
     target: { value: '18,000 Gal', subtitle: '90% of capacity' },
@@ -97,7 +97,7 @@ const INVENTORY_DATA: InventoryDetailRow[] = [
   },
   {
     facility: { name: 'Dallas Terminal', location: 'Dallas, TX' },
-    material: 'Citric Acid',
+    material: 'Component D',
     currentStock: { value: '28,500 kg', subtitle: '75% of capacity' },
     costPerTon: { value: '$1.25/kg', subtitle: 'Pre: $1.42/kg' },
     target: { value: '32,000 kg', subtitle: '84% of capacity' },
@@ -106,8 +106,8 @@ const INVENTORY_DATA: InventoryDetailRow[] = [
     cause: 'Seasonal demand',
   },
   {
-    facility: { name: 'Midwest HFCS Facility', location: 'Des Moines, IA' },
-    material: 'HFCS-55',
+    facility: { name: 'Central Facility', location: 'Des Moines, IA' },
+    material: 'Raw Material A',
     currentStock: { value: '52,000 Gal', subtitle: '95% of capacity' },
     costPerTon: { value: '$0.42/lb', subtitle: 'Pre: $0.48/lb' },
     target: { value: '50,000 Gal', subtitle: '91% of capacity' },
@@ -116,8 +116,8 @@ const INVENTORY_DATA: InventoryDetailRow[] = [
     cause: '—',
   },
   {
-    facility: { name: 'Seattle Bottler', location: 'Seattle, WA' },
-    material: 'Vitamin Premix',
+    facility: { name: 'Seattle Facility', location: 'Seattle, WA' },
+    material: 'Compound G',
     currentStock: { value: '4,200 kg', subtitle: '56% of capacity' },
     costPerTon: { value: '$8.50/kg', subtitle: 'Pre: $9.20/kg' },
     target: { value: '6,500 kg', subtitle: '87% of capacity' },

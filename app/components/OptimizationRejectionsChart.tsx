@@ -37,13 +37,6 @@ interface ChartDataPoint {
   barColor: string;
 }
 
-interface RankingCard {
-  rank: number;
-  category: string;
-  rejections: number;
-  percentage: number;
-  isTopRank: boolean;
-}
 
 // ============================================
 // DATA
@@ -94,29 +87,6 @@ const chartData: ChartDataPoint[] = [
   },
 ];
 
-const rankingCards: RankingCard[] = [
-  {
-    rank: 1,
-    category: 'Service Requirements',
-    rejections: 180000,
-    percentage: 28,
-    isTopRank: true,
-  },
-  {
-    rank: 2,
-    category: 'Risk Management',
-    rejections: 140000,
-    percentage: 22,
-    isTopRank: false,
-  },
-  {
-    rank: 3,
-    category: 'Capacity Constraints',
-    rejections: 115000,
-    percentage: 18,
-    isTopRank: false,
-  },
-];
 
 // ============================================
 // CUSTOM TOOLTIP
@@ -321,103 +291,6 @@ const SummaryCards = ({ totalRejections, rejectedValueK }: SummaryCardsProps) =>
   );
 };
 
-// ============================================
-// RANKING CARDS
-// ============================================
-
-interface RankingCardsSectionProps {
-  cards: RankingCard[];
-}
-
-const RankingCardsSection = ({ cards }: RankingCardsSectionProps) => {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        gap: SPACING[16],
-        marginTop: SPACING[16],
-      }}
-    >
-      {cards.map((card) => (
-        <div
-          key={card.rank}
-          style={{
-            flex: '1 0 0',
-            backgroundColor: '#F3F6F9',
-            borderRadius: CARD_CURVATURE,
-            padding: SPACING[16],
-            display: 'flex',
-            alignItems: 'center',
-            gap: SPACING[12],
-          }}
-        >
-          {/* Rank Number */}
-          <div
-            style={{
-              paddingRight: SPACING[12],
-              borderRight: `0.5px solid ${COLORS.border.default}`,
-              fontFamily: 'DM Sans',
-              fontSize: '18px',
-              lineHeight: '26px',
-              fontWeight: 400,
-              color: COLORS.text.secondary,
-              whiteSpace: 'nowrap',
-            }}
-          >
-            #{card.rank}
-          </div>
-
-          {/* Middle Section - Category & Details */}
-          <div
-            style={{
-              flex: '1 0 0',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '2px',
-            }}
-          >
-            <div
-              style={{
-                fontFamily: 'DM Sans',
-                fontSize: '14px',
-                lineHeight: '22px',
-                fontWeight: 500,
-                color: COLORS.text.primary,
-              }}
-            >
-              {card.category}
-            </div>
-            <div
-              style={{
-                fontFamily: 'DM Sans',
-                fontSize: '14px',
-                lineHeight: '22px',
-                fontWeight: 400,
-                color: COLORS.text.secondary,
-              }}
-            >
-              {card.rejections.toLocaleString()} rejections (${(card.rejections / 1000).toFixed(0)}K)
-            </div>
-          </div>
-
-          {/* Percentage */}
-          <div
-            style={{
-              fontFamily: 'DM Sans',
-              fontSize: '18px',
-              lineHeight: '26px',
-              fontWeight: 600,
-              color: card.isTopRank ? COLORS.semantic.error[500] : '#A58B00',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {card.percentage}%
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-};
 
 // ============================================
 // MAIN COMPONENT
@@ -445,13 +318,6 @@ export const OptimizationRejectionsChart = React.forwardRef<
     }));
   }, [dataMultiplier]);
 
-  // Generate scaled ranking cards
-  const scaledRankingCards = React.useMemo(() => {
-    return rankingCards.map(card => ({
-      ...card,
-      rejections: Math.round(card.rejections * dataMultiplier),
-    }));
-  }, [dataMultiplier]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -616,9 +482,6 @@ export const OptimizationRejectionsChart = React.forwardRef<
           </ComposedChart>
         </ResponsiveContainer>
       </div>
-
-      {/* Ranking Cards */}
-      <RankingCardsSection cards={scaledRankingCards} />
     </div>
   );
 });
