@@ -91,6 +91,8 @@ export const NotificationCard = React.forwardRef<HTMLDivElement, NotificationCar
           'rounded-[16px]',
           'p-[16px]',
           'flex flex-col',
+          'min-h-[140px]', // Consistent minimum height for all alert cards
+          'h-full', // Allow stretching to match siblings
           className
         )}
       >

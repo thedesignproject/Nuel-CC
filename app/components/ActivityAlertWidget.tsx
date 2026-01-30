@@ -163,7 +163,7 @@ export const ActivityAlertWidget = React.forwardRef<HTMLDivElement, ActivityAler
                 </div>
               ) : (
                 alerts.map((alert) => (
-                  <div key={alert.id} className="flex-shrink-0">
+                  <div key={alert.id} className="flex-shrink-0 flex">
                     <NotificationCard
                       severity={alert.severity}
                       title={alert.title}

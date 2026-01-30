@@ -140,7 +140,7 @@ export const InventoryAlerts = React.forwardRef<HTMLDivElement, InventoryAlertsP
                 secondaryAction="Dismiss"
                 onPrimaryAction={() => handleReviewAlert(alert)}
                 onSecondaryAction={() => handleDismissCard(alert.id)}
-                className="w-full"
+                className="w-full min-h-[140px]"
               />
             ))}
           </div>
