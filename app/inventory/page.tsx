@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { TopBar } from '../components/TopBar';
 import { Sidebar } from '../components/Sidebar';
 import { NotificationsPanel } from '../components/NotificationsPanel';
@@ -15,12 +15,18 @@ export default function InventoryPage() {
   const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [currentFilters, setCurrentFilters] = useState({
+    region: 'All Regions',
+    timeFrame: 'Next 3 Months',
+    material: 'All Materials'
+  });
   const { logout } = useAuth();
 
-  // Handle filter changes - creates visual refresh effect
+  // Handle filter changes - updates state and creates visual refresh effect
   const handleFilterChange = useCallback((filters: { region: string; timeFrame: string; material: string }) => {
     setIsRefreshing(true);
     setTimeout(() => {
+      setCurrentFilters(filters);
       setRefreshKey(prev => prev + 1);
       setIsRefreshing(false);
     }, 300);
@@ -83,15 +89,15 @@ export default function InventoryPage() {
                   width: '100%',
                 }}
               >
-                <InventoryAlerts />
+                <InventoryAlerts filters={currentFilters} />
                 <InteractiveInventoryMapWrapper />
               </div>
 
               {/* Regional Targets Section */}
-              <RegionalTargets />
+              <RegionalTargets filters={currentFilters} />
 
               {/* Inventory Details Table Section */}
-              <InventoryDetailsTable />
+              <InventoryDetailsTable filters={currentFilters} />
             </div>
           </div>
         </div>

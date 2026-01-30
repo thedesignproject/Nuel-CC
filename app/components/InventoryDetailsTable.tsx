@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Package, MagnifyingGlass, CaretDown, CaretUp } from '@phosphor-icons/react';
 import { SectionHeader } from './SectionHeader';
 import { StatusPill, StatusVariant } from './StatusPill';
@@ -15,6 +15,7 @@ export interface InventoryDetailRow {
     name: string;
     location: string;
   };
+  region: string;
   material: string;
   currentStock: {
     value: string;
@@ -38,6 +39,11 @@ export interface InventoryDetailRow {
 
 export interface InventoryDetailsTableProps {
   className?: string;
+  filters?: {
+    region: string;
+    timeFrame: string;
+    material: string;
+  };
 }
 
 // ============================================
@@ -47,6 +53,7 @@ export interface InventoryDetailsTableProps {
 const INVENTORY_DATA: InventoryDetailRow[] = [
   {
     facility: { name: 'Southern Terminal', location: 'Houston, TX' },
+    region: 'Southwest',
     material: 'Raw Material A',
     currentStock: { value: '25,400 Gal', subtitle: '48% of capacity' },
     costPerTon: { value: '$0.45/lb', subtitle: 'Pre: $0.52/lb' },
@@ -57,6 +64,7 @@ const INVENTORY_DATA: InventoryDetailRow[] = [
   },
   {
     facility: { name: 'Regional Hub', location: 'Atlanta, GA' },
+    region: 'Southeast',
     material: 'Raw Material B',
     currentStock: { value: '42,000 kg', subtitle: '93% of capacity' },
     costPerTon: { value: '$0.12/kg', subtitle: 'Pre: $0.14/kg' },
@@ -67,6 +75,7 @@ const INVENTORY_DATA: InventoryDetailRow[] = [
   },
   {
     facility: { name: 'Los Angeles Facility', location: 'Los Angeles, CA' },
+    region: 'West Coast',
     material: 'Component C',
     currentStock: { value: '18,500 Gal', subtitle: '62% of capacity' },
     costPerTon: { value: '$2.85/lb', subtitle: 'Pre: $3.15/lb' },
@@ -77,6 +86,7 @@ const INVENTORY_DATA: InventoryDetailRow[] = [
   },
   {
     facility: { name: 'Midwest Processing', location: 'Chicago, IL' },
+    region: 'Midwest',
     material: 'Component D',
     currentStock: { value: '38,200 Gal', subtitle: '91% of capacity' },
     costPerTon: { value: '$0.68/lb', subtitle: 'Pre: $0.75/lb' },
@@ -87,6 +97,7 @@ const INVENTORY_DATA: InventoryDetailRow[] = [
   },
   {
     facility: { name: 'Eastern Terminal', location: 'Newark, NJ' },
+    region: 'Northeast',
     material: 'Additive E',
     currentStock: { value: '8,400 Gal', subtitle: '42% of capacity' },
     costPerTon: { value: '$15.80/Gal', subtitle: 'Pre: $17.20/Gal' },
@@ -97,6 +108,7 @@ const INVENTORY_DATA: InventoryDetailRow[] = [
   },
   {
     facility: { name: 'Dallas Terminal', location: 'Dallas, TX' },
+    region: 'Southwest',
     material: 'Component D',
     currentStock: { value: '28,500 kg', subtitle: '75% of capacity' },
     costPerTon: { value: '$1.25/kg', subtitle: 'Pre: $1.42/kg' },
@@ -107,6 +119,7 @@ const INVENTORY_DATA: InventoryDetailRow[] = [
   },
   {
     facility: { name: 'Central Facility', location: 'Des Moines, IA' },
+    region: 'Midwest',
     material: 'Raw Material A',
     currentStock: { value: '52,000 Gal', subtitle: '95% of capacity' },
     costPerTon: { value: '$0.42/lb', subtitle: 'Pre: $0.48/lb' },
@@ -117,6 +130,7 @@ const INVENTORY_DATA: InventoryDetailRow[] = [
   },
   {
     facility: { name: 'Seattle Facility', location: 'Seattle, WA' },
+    region: 'West Coast',
     material: 'Compound G',
     currentStock: { value: '4,200 kg', subtitle: '56% of capacity' },
     costPerTon: { value: '$8.50/kg', subtitle: 'Pre: $9.20/kg' },
@@ -132,12 +146,44 @@ const INVENTORY_DATA: InventoryDetailRow[] = [
 // ============================================
 
 export const InventoryDetailsTable = React.forwardRef<HTMLDivElement, InventoryDetailsTableProps>(
-  ({ className }, ref) => {
+  ({ className, filters }, ref) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [itemsFilter, setItemsFilter] = useState('All Items');
     const [statusFilter, setStatusFilter] = useState('All statuses');
     const [typesFilter, setTypesFilter] = useState('All types');
     const [currentPage, setCurrentPage] = useState(1);
+
+    // Filter data based on TopBar filters and local search/filters
+    const filteredData = useMemo(() => {
+      let data = INVENTORY_DATA;
+
+      // Apply TopBar filters
+      if (filters) {
+        if (filters.region !== 'All Regions') {
+          data = data.filter(row => row.region === filters.region);
+        }
+        if (filters.material !== 'All Materials') {
+          data = data.filter(row => row.material === filters.material);
+        }
+      }
+
+      // Apply local search
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        data = data.filter(row =>
+          row.facility.name.toLowerCase().includes(query) ||
+          row.facility.location.toLowerCase().includes(query) ||
+          row.material.toLowerCase().includes(query)
+        );
+      }
+
+      // Apply local status filter
+      if (statusFilter !== 'All statuses') {
+        data = data.filter(row => row.status.toLowerCase() === statusFilter.toLowerCase());
+      }
+
+      return data;
+    }, [filters, searchQuery, statusFilter]);
 
     return (
       <div
@@ -290,11 +336,18 @@ export const InventoryDetailsTable = React.forwardRef<HTMLDivElement, InventoryD
 
             {/* Table Body */}
             <tbody>
-              {INVENTORY_DATA.map((row, index) => (
+              {filteredData.length === 0 ? (
+                <tr>
+                  <td colSpan={9} style={{ padding: '48px', textAlign: 'center', color: '#7F8FA4', fontFamily: 'DM Sans', fontSize: '14px' }}>
+                    No inventory items match the selected filters
+                  </td>
+                </tr>
+              ) : (
+              filteredData.map((row, index) => (
                 <tr
                   key={index}
                   style={{
-                    borderBottom: index < INVENTORY_DATA.length - 1 ? '1px solid #D9E0E9' : 'none',
+                    borderBottom: index < filteredData.length - 1 ? '1px solid #D9E0E9' : 'none',
                   }}
                 >
                   {/* Facility */}
@@ -389,7 +442,8 @@ export const InventoryDetailsTable = React.forwardRef<HTMLDivElement, InventoryD
                     <div style={mainTextStyle}>{row.cause}</div>
                   </td>
                 </tr>
-              ))}
+              ))
+              )}
             </tbody>
           </table>
         </div>

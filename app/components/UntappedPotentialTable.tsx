@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { FileText, MagnifyingGlass } from '@phosphor-icons/react';
 import { SectionHeader } from './SectionHeader';
 import { StatusPill } from './StatusPill';
@@ -24,6 +24,11 @@ export interface UntappedPotentialRow {
 
 export interface UntappedPotentialTableProps {
   className?: string;
+  filters?: {
+    region: string;
+    timeFrame: string;
+    material: string;
+  };
 }
 
 // ============================================
@@ -126,13 +131,62 @@ const UNTAPPED_POTENTIAL_DATA: UntappedPotentialRow[] = [
 // ============================================
 
 export const UntappedPotentialTable = React.forwardRef<HTMLDivElement, UntappedPotentialTableProps>(
-  ({ className }, ref) => {
+  ({ className, filters }, ref) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [regionFilter, setRegionFilter] = useState('All regions');
     const [managerFilter, setManagerFilter] = useState('All managers');
     const [categoryFilter, setCategoryFilter] = useState('All categories');
     const [priorityFilter, setPriorityFilter] = useState('All priorities');
     const [statusFilter, setStatusFilter] = useState('All status');
+
+    // Filter data based on TopBar filters and local filters
+    const filteredData = useMemo(() => {
+      let data = UNTAPPED_POTENTIAL_DATA;
+
+      // Apply TopBar filters
+      if (filters) {
+        if (filters.region !== 'All Regions') {
+          data = data.filter(row => row.region === filters.region);
+        }
+      }
+
+      // Apply local search
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        data = data.filter(row =>
+          row.orderId.toLowerCase().includes(query) ||
+          row.manager.toLowerCase().includes(query) ||
+          row.optimizationType.toLowerCase().includes(query)
+        );
+      }
+
+      // Apply local region filter
+      if (regionFilter !== 'All regions') {
+        data = data.filter(row => row.region === regionFilter);
+      }
+
+      // Apply local manager filter
+      if (managerFilter !== 'All managers') {
+        data = data.filter(row => row.manager === managerFilter);
+      }
+
+      // Apply local priority filter
+      if (priorityFilter !== 'All priorities') {
+        data = data.filter(row => row.priority.toLowerCase() === priorityFilter.toLowerCase());
+      }
+
+      // Apply local status filter
+      if (statusFilter !== 'All status') {
+        const statusMap: Record<string, string> = {
+          'Justified': 'justified',
+          'Under review': 'under-review',
+          'Needs Review': 'needs-review',
+        };
+        data = data.filter(row => row.status === statusMap[statusFilter]);
+      }
+
+      return data;
+    }, [filters, searchQuery, regionFilter, managerFilter, priorityFilter, statusFilter]);
 
     const getStatusVariant = (status: string) => {
       switch (status) {
@@ -354,11 +408,18 @@ export const UntappedPotentialTable = React.forwardRef<HTMLDivElement, UntappedP
 
             {/* Table Body */}
             <tbody>
-              {UNTAPPED_POTENTIAL_DATA.map((row, index) => (
+              {filteredData.length === 0 ? (
+                <tr>
+                  <td colSpan={10} style={{ padding: '48px', textAlign: 'center', color: '#7F8FA4', fontFamily: 'DM Sans', fontSize: '14px' }}>
+                    No opportunities match the selected filters
+                  </td>
+                </tr>
+              ) : (
+              filteredData.map((row, index) => (
                 <tr
                   key={index}
                   style={{
-                    borderBottom: index < UNTAPPED_POTENTIAL_DATA.length - 1 ? '1px solid #D9E0E9' : 'none',
+                    borderBottom: index < filteredData.length - 1 ? '1px solid #D9E0E9' : 'none',
                   }}
                 >
                   {/* Order ID */}
@@ -430,7 +491,8 @@ export const UntappedPotentialTable = React.forwardRef<HTMLDivElement, UntappedP
                     </button>
                   </td>
                 </tr>
-              ))}
+              ))
+              )}
             </tbody>
           </table>
         </div>
@@ -451,7 +513,7 @@ export const UntappedPotentialTable = React.forwardRef<HTMLDivElement, UntappedP
               color: '#7F8FA4',
             }}
           >
-            Showing all {UNTAPPED_POTENTIAL_DATA.length} entries
+            Showing {filteredData.length} of {UNTAPPED_POTENTIAL_DATA.length} entries
           </span>
         </div>
 

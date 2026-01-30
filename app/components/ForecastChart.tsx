@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   ComposedChart,
   Bar,
@@ -23,7 +23,45 @@ import { COLORS, SPACING, TYPOGRAPHY } from '../design-tokens';
 export interface ForecastChartProps {
   /** Additional className for custom styling */
   className?: string;
+  /** Filters for data */
+  filters?: {
+    region: string;
+    timeFrame: string;
+    material: string;
+  };
 }
+
+// Filter-based multiplier for realistic variations
+const getFilterMultiplier = (filters?: { region: string; timeFrame: string; material: string }) => {
+  if (!filters) return 1;
+
+  let multiplier = 1;
+
+  const regionMultipliers: Record<string, number> = {
+    'All Regions': 1,
+    'Southeast': 0.28,
+    'Midwest': 0.22,
+    'West Coast': 0.19,
+    'Southwest': 0.15,
+    'Northeast': 0.12,
+    'Mountain': 0.04,
+  };
+
+  const materialMultipliers: Record<string, number> = {
+    'All Materials': 1,
+    'Raw Material A': 0.35,
+    'Raw Material B': 0.18,
+    'Component C': 0.12,
+    'Component D': 0.15,
+    'Additive E': 0.08,
+    'Additive F': 0.12,
+  };
+
+  multiplier *= regionMultipliers[filters.region] || 1;
+  multiplier *= materialMultipliers[filters.material] || 1;
+
+  return multiplier;
+};
 
 interface ChartDataPoint {
   date: string;
@@ -394,8 +432,20 @@ const CustomXAxisTick = ({ x, y, payload }: any) => {
  * Exact specifications from Figma with stacked bars and forecast line
  */
 export const ForecastChart = React.forwardRef<HTMLDivElement, ForecastChartProps>(
-  ({ className }, ref) => {
-    const todayIndex = chartData.findIndex((d) => d.isToday);
+  ({ className, filters }, ref) => {
+    // Apply filter multiplier to chart data
+    const filteredChartData = useMemo(() => {
+      const mult = getFilterMultiplier(filters);
+      return chartData.map(point => ({
+        ...point,
+        ordersShipped: Math.round(point.ordersShipped * mult),
+        unshippedGap: Math.round(point.unshippedGap * mult),
+        newOrders: Math.round(point.newOrders * mult),
+        forecast: Math.round(point.forecast * mult),
+      }));
+    }, [filters]);
+
+    const todayIndex = filteredChartData.findIndex((d) => d.isToday);
 
     return (
       <div
@@ -410,7 +460,7 @@ export const ForecastChart = React.forwardRef<HTMLDivElement, ForecastChartProps
       >
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
-            data={chartData}
+            data={filteredChartData}
             margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
             barGap={0}
             barCategoryGap="20%"
@@ -456,7 +506,7 @@ export const ForecastChart = React.forwardRef<HTMLDivElement, ForecastChartProps
             {/* TODAY Reference Line */}
             {todayIndex >= 0 && (
               <ReferenceLine
-                x={chartData[todayIndex].date}
+                x={filteredChartData[todayIndex].date}
                 stroke="#D345F8"
                 strokeWidth={2}
                 label={{

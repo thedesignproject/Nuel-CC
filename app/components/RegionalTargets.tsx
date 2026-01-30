@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { SectionHeader } from './SectionHeader';
 import { ProgressBar } from './ProgressBar';
 import { Modal } from './Modal';
@@ -11,22 +11,131 @@ import { warning } from '../../lib/design-tokens/colors';
 
 export interface RegionalTargetsProps {
   className?: string;
+  filters?: {
+    region: string;
+    timeFrame: string;
+    material: string;
+  };
 }
 
 type TabType = 'facility' | 'material';
 
+// Facility data with region mapping
+const FACILITIES_DATA = [
+  {
+    name: 'Southern Terminal',
+    region: 'Southwest',
+    usagePercent: 50,
+    targetPercent: 86,
+    alerts: 2,
+    status: 'critical' as const,
+    materials: [
+      { name: 'Raw Material A', current: 14, target: 24, capacity: 28, percentage: 50, status: 'critical' as const },
+      { name: 'Raw Material B', current: 18, target: 20, capacity: 25, percentage: 72, status: 'warning' as const },
+      { name: 'Additive E', current: 22, target: 24, capacity: 28, percentage: 79, status: 'good' as const },
+      { name: 'Additive F', current: 0, target: 0, capacity: 0, status: 'warning' as const, noData: true },
+    ],
+  },
+  {
+    name: 'Regional Hub',
+    region: 'Southeast',
+    usagePercent: 91,
+    targetPercent: 86,
+    alerts: 0,
+    status: 'good' as const,
+    materials: [
+      { name: 'Raw Material B', current: 32, target: 30, capacity: 35, percentage: 91, status: 'good' as const },
+    ],
+  },
+  {
+    name: 'Midwest Processing',
+    region: 'Midwest',
+    usagePercent: 90,
+    targetPercent: 86,
+    alerts: 0,
+    status: 'good' as const,
+    materials: [
+      { name: 'Component C', current: 38, target: 36, capacity: 42, percentage: 90, status: 'good' as const },
+    ],
+  },
+  {
+    name: 'Los Angeles Facility',
+    region: 'West Coast',
+    usagePercent: 75,
+    targetPercent: 80,
+    alerts: 1,
+    status: 'warning' as const,
+    materials: [
+      { name: 'Component D', current: 28, target: 32, capacity: 38, percentage: 74, status: 'warning' as const },
+    ],
+  },
+  {
+    name: 'Eastern Terminal',
+    region: 'Northeast',
+    usagePercent: 65,
+    targetPercent: 85,
+    alerts: 1,
+    status: 'warning' as const,
+    materials: [
+      { name: 'Additive E', current: 18, target: 25, capacity: 30, percentage: 60, status: 'warning' as const },
+    ],
+  },
+];
+
+// Material aggregated data
+const MATERIALS_DATA = [
+  { name: 'Raw Material A', usagePercent: 45, targetPercent: 65, alerts: 1, status: 'critical' as const },
+  { name: 'Raw Material B', usagePercent: 72, targetPercent: 80, alerts: 1, status: 'warning' as const },
+  { name: 'Additive E', usagePercent: 88, targetPercent: 85, alerts: 0, status: 'good' as const },
+  { name: 'Component C', usagePercent: 90, targetPercent: 86, alerts: 0, status: 'good' as const },
+  { name: 'Component D', usagePercent: 74, targetPercent: 80, alerts: 1, status: 'warning' as const },
+];
+
 /**
  * RegionalTargets Component
  * Displays regional performance targets with detailed progress bars
- * Exactly replicates Figma specifications with XL and LG progress bar variants
+ * Filters based on TopBar selections
  */
 export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsProps>(
-  ({ className }, ref) => {
+  ({ className, filters }, ref) => {
     const [activeTab, setActiveTab] = useState<TabType>('facility');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedMaterial, setSelectedMaterial] = useState<{ name: string; current: number; target: number; capacity: number } | null>(null);
     const [targetValue, setTargetValue] = useState('');
     const [reasonValue, setReasonValue] = useState('');
+
+    // Filter facilities based on region
+    const filteredFacilities = useMemo(() => {
+      let facilities = FACILITIES_DATA;
+
+      if (filters) {
+        // Filter by region
+        if (filters.region !== 'All Regions') {
+          facilities = facilities.filter(f => f.region === filters.region);
+        }
+
+        // Filter materials within each facility
+        if (filters.material !== 'All Materials') {
+          facilities = facilities.map(f => ({
+            ...f,
+            materials: f.materials.filter(m => m.name === filters.material),
+          })).filter(f => f.materials.length > 0);
+        }
+      }
+
+      return facilities;
+    }, [filters]);
+
+    // Filter materials based on selection
+    const filteredMaterials = useMemo(() => {
+      let materials = MATERIALS_DATA;
+
+      if (filters && filters.material !== 'All Materials') {
+        materials = materials.filter(m => m.name === filters.material);
+      }
+
+      return materials;
+    }, [filters]);
 
     const handleSettingsClick = (name: string, current: number, target: number, capacity: number) => {
       setSelectedMaterial({ name, current, target, capacity });
@@ -166,260 +275,131 @@ export const RegionalTargets = React.forwardRef<HTMLDivElement, RegionalTargetsP
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {activeTab === 'facility' ? (
             // By Facility View
-            <>
-              {/* Southern Terminal */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {/* Facility Header */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <Factory size={20} weight="regular" color="#1C58F7" />
-                  <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
-                    Southern Terminal
-                  </p>
-                  <p style={{ fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#7F8FA4', fontFamily: 'DM Sans' }}>
-                    Using 50% of total capacity — Target is at 86% capacity
-                  </p>
-
-                  {/* Alert Badge */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 8px', backgroundColor: '#FFD6DB', borderRadius: '6px', marginLeft: 'auto' }}>
-                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#FF3B30' }} />
-                    <p style={{ fontSize: '12px', lineHeight: '20px', fontWeight: 500, color: '#FF3B30', fontFamily: 'DM Sans' }}>
-                      2 Alerts
+            filteredFacilities.length === 0 ? (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '48px',
+                color: '#7F8FA4',
+                fontFamily: 'DM Sans',
+                fontSize: '14px',
+              }}>
+                No facilities match the selected filters
+              </div>
+            ) : (
+              filteredFacilities.map((facility) => (
+                <div key={facility.name} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {/* Facility Header */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <Factory size={20} weight="regular" color="#1C58F7" />
+                    <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
+                      {facility.name}
                     </p>
+                    <p style={{ fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#7F8FA4', fontFamily: 'DM Sans' }}>
+                      Using {facility.usagePercent}% of total capacity — Target is at {facility.targetPercent}% capacity
+                    </p>
+
+                    {/* Status Badge */}
+                    {facility.alerts > 0 ? (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 8px', backgroundColor: facility.status === 'critical' ? '#FFD6DB' : warning[100], borderRadius: '6px', marginLeft: 'auto' }}>
+                        <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: facility.status === 'critical' ? '#FF3B30' : warning[500] }} />
+                        <p style={{ fontSize: '12px', lineHeight: '20px', fontWeight: 500, color: facility.status === 'critical' ? '#FF3B30' : warning[500], fontFamily: 'DM Sans' }}>
+                          {facility.alerts} Alert{facility.alerts > 1 ? 's' : ''}
+                        </p>
+                      </div>
+                    ) : (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 8px', backgroundColor: '#D6F5E1', borderRadius: '6px', marginLeft: 'auto' }}>
+                        <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#34C759' }} />
+                        <p style={{ fontSize: '12px', lineHeight: '20px', fontWeight: 500, color: '#34C759', fontFamily: 'DM Sans' }}>
+                          All clear
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Material Progress Bars */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', paddingLeft: '28px' }}>
+                    {facility.materials.map((mat) => (
+                      <ProgressBar
+                        key={mat.name}
+                        size="xl"
+                        name={mat.name}
+                        icon={materialIcons[mat.name as keyof typeof materialIcons]}
+                        current={mat.current}
+                        target={mat.target}
+                        capacity={mat.capacity}
+                        percentage={mat.percentage}
+                        status={mat.status}
+                        warningMessage={(mat as any).noData ? 'No data available for this material/facility' : undefined}
+                        onSettingsClick={() => handleSettingsClick(mat.name, mat.current, mat.target, mat.capacity)}
+                      />
+                    ))}
                   </div>
                 </div>
-
-                {/* Material Progress Bars (XL) */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', paddingLeft: '28px' }}>
-                  <ProgressBar
-                    size="xl"
-                    name="Raw Material A"
-                    icon={materialIcons['Raw Material A']}
-                    current={14}
-                    target={24}
-                    capacity={28}
-                    percentage={50}
-                    status="critical"
-                    onSettingsClick={() => handleSettingsClick('Raw Material A', 14, 24, 28)}
-                  />
-                  <ProgressBar
-                    size="xl"
-                    name="Raw Material B"
-                    icon={materialIcons['Raw Material B']}
-                    current={18}
-                    target={20}
-                    capacity={25}
-                    percentage={72}
-                    status="warning"
-                    onSettingsClick={() => handleSettingsClick('Raw Material B', 18, 20, 25)}
-                  />
-                  <ProgressBar
-                    size="xl"
-                    name="Additive E"
-                    icon={materialIcons['Additive E']}
-                    current={22}
-                    target={24}
-                    capacity={28}
-                    percentage={79}
-                    status="good"
-                    onSettingsClick={() => handleSettingsClick('Additive E', 22, 24, 28)}
-                  />
-                  <ProgressBar
-                    size="xl"
-                    name="Additive F"
-                    icon={materialIcons['Additive F']}
-                    current={0}
-                    target={0}
-                    capacity={0}
-                    status="warning"
-                    warningMessage="No data available for this material/facility"
-                    onSettingsClick={() => handleSettingsClick('Additive F', 0, 0, 0)}
-                  />
-                </div>
-              </div>
-
-              {/* Regional Hub */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {/* Facility Header with "All clear" badge */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <Factory size={20} weight="regular" color="#1C58F7" />
-                  <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
-                    Regional Hub
-                  </p>
-                  <p style={{ fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#7F8FA4', fontFamily: 'DM Sans' }}>
-                    Using 91% of total capacity — Target is at 86% capacity
-                  </p>
-
-                  {/* All Clear Badge */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 8px', backgroundColor: '#D6F5E1', borderRadius: '6px', marginLeft: 'auto' }}>
-                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#34C759' }} />
-                    <p style={{ fontSize: '12px', lineHeight: '20px', fontWeight: 500, color: '#34C759', fontFamily: 'DM Sans' }}>
-                      All clear
-                    </p>
-                  </div>
-                </div>
-
-                {/* Single XL Progress Bar */}
-                <div style={{ paddingLeft: '28px' }}>
-                  <ProgressBar
-                    size="xl"
-                    name=""
-                    current={32}
-                    target={30}
-                    capacity={35}
-                    percentage={91}
-                    status="good"
-                    showSettings={false}
-                  />
-                </div>
-              </div>
-
-              {/* Midwest Processing */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {/* Facility Header */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <Factory size={20} weight="regular" color="#1C58F7" />
-                  <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
-                    Midwest Processing
-                  </p>
-                  <p style={{ fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#7F8FA4', fontFamily: 'DM Sans' }}>
-                    Using 90% of total capacity — Target is at 86% capacity
-                  </p>
-
-                  {/* All Clear Badge */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 8px', backgroundColor: '#D6F5E1', borderRadius: '6px', marginLeft: 'auto' }}>
-                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#34C759' }} />
-                    <p style={{ fontSize: '12px', lineHeight: '20px', fontWeight: 500, color: '#34C759', fontFamily: 'DM Sans' }}>
-                      All clear
-                    </p>
-                  </div>
-                </div>
-
-                {/* Single XL Progress Bar */}
-                <div style={{ paddingLeft: '28px' }}>
-                  <ProgressBar
-                    size="xl"
-                    name=""
-                    current={38}
-                    target={36}
-                    capacity={42}
-                    percentage={90}
-                    status="good"
-                    showSettings={false}
-                  />
-                </div>
-              </div>
-            </>
+              ))
+            )
           ) : (
             // By Material View
-            <>
-              {/* Raw Material A */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {/* Material Header */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  {materialIcons['Raw Material A']}
-                  <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
-                    Raw Material A
-                  </p>
-                  <p style={{ fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#7F8FA4', fontFamily: 'DM Sans' }}>
-                    Using 45% of total capacity — Target is at 65% capacity
-                  </p>
-
-                  {/* Alert Badge */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 8px', backgroundColor: '#FFD6DB', borderRadius: '6px', marginLeft: 'auto' }}>
-                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#FF3B30' }} />
-                    <p style={{ fontSize: '12px', lineHeight: '20px', fontWeight: 500, color: '#FF3B30', fontFamily: 'DM Sans' }}>
-                      1 Alert
+            filteredMaterials.length === 0 ? (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '48px',
+                color: '#7F8FA4',
+                fontFamily: 'DM Sans',
+                fontSize: '14px',
+              }}>
+                No materials match the selected filters
+              </div>
+            ) : (
+              filteredMaterials.map((material) => (
+                <div key={material.name} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {/* Material Header */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    {materialIcons[material.name as keyof typeof materialIcons]}
+                    <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
+                      {material.name}
                     </p>
+                    <p style={{ fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#7F8FA4', fontFamily: 'DM Sans' }}>
+                      Using {material.usagePercent}% of total capacity — Target is at {material.targetPercent}% capacity
+                    </p>
+
+                    {/* Status Badge */}
+                    {material.alerts > 0 ? (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 8px', backgroundColor: material.status === 'critical' ? '#FFD6DB' : warning[100], borderRadius: '6px', marginLeft: 'auto' }}>
+                        <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: material.status === 'critical' ? '#FF3B30' : warning[500] }} />
+                        <p style={{ fontSize: '12px', lineHeight: '20px', fontWeight: 500, color: material.status === 'critical' ? '#FF3B30' : warning[500], fontFamily: 'DM Sans' }}>
+                          {material.alerts} Alert{material.alerts > 1 ? 's' : ''}
+                        </p>
+                      </div>
+                    ) : (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 8px', backgroundColor: '#D6F5E1', borderRadius: '6px', marginLeft: 'auto' }}>
+                        <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#34C759' }} />
+                        <p style={{ fontSize: '12px', lineHeight: '20px', fontWeight: 500, color: '#34C759', fontFamily: 'DM Sans' }}>
+                          All clear
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Single XL Progress Bar */}
+                  <div style={{ paddingLeft: '28px' }}>
+                    <ProgressBar
+                      size="xl"
+                      name=""
+                      current={material.usagePercent}
+                      target={material.targetPercent}
+                      capacity={100}
+                      percentage={material.usagePercent}
+                      status={material.status}
+                      showSettings={false}
+                    />
                   </div>
                 </div>
-
-                {/* Single XL Progress Bar */}
-                <div style={{ paddingLeft: '28px' }}>
-                  <ProgressBar
-                    size="xl"
-                    name=""
-                    current={45}
-                    target={65}
-                    capacity={100}
-                    percentage={45}
-                    status="critical"
-                    showSettings={false}
-                  />
-                </div>
-              </div>
-
-              {/* Raw Material B */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {/* Material Header */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  {materialIcons['Raw Material B']}
-                  <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
-                    Raw Material B
-                  </p>
-                  <p style={{ fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#7F8FA4', fontFamily: 'DM Sans' }}>
-                    Using 72% of total capacity — Target is at 80% capacity
-                  </p>
-
-                  {/* Alert Badge */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 8px', backgroundColor: warning[100], borderRadius: '6px', marginLeft: 'auto' }}>
-                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: warning[500] }} />
-                    <p style={{ fontSize: '12px', lineHeight: '20px', fontWeight: 500, color: warning[500], fontFamily: 'DM Sans' }}>
-                      1 Alert
-                    </p>
-                  </div>
-                </div>
-
-                {/* Single XL Progress Bar */}
-                <div style={{ paddingLeft: '28px' }}>
-                  <ProgressBar
-                    size="xl"
-                    name=""
-                    current={72}
-                    target={80}
-                    capacity={100}
-                    percentage={72}
-                    status="warning"
-                    showSettings={false}
-                  />
-                </div>
-              </div>
-
-              {/* Additive E */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {/* Material Header */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  {materialIcons['Additive E']}
-                  <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, color: '#17263D', fontFamily: 'DM Sans' }}>
-                    Additive E
-                  </p>
-                  <p style={{ fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#7F8FA4', fontFamily: 'DM Sans' }}>
-                    Using 88% of total capacity — Target is at 85% capacity
-                  </p>
-
-                  {/* All Clear Badge */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 8px', backgroundColor: '#D6F5E1', borderRadius: '6px', marginLeft: 'auto' }}>
-                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#34C759' }} />
-                    <p style={{ fontSize: '12px', lineHeight: '20px', fontWeight: 500, color: '#34C759', fontFamily: 'DM Sans' }}>
-                      All clear
-                    </p>
-                  </div>
-                </div>
-
-                {/* Single XL Progress Bar */}
-                <div style={{ paddingLeft: '28px' }}>
-                  <ProgressBar
-                    size="xl"
-                    name=""
-                    current={88}
-                    target={85}
-                    capacity={100}
-                    percentage={88}
-                    status="good"
-                    showSettings={false}
-                  />
-                </div>
-              </div>
-            </>
+              ))
+            )
           )}
         </div>
 

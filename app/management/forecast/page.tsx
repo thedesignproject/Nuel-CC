@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { TopBar } from '../../components/TopBar';
 import { Sidebar } from '../../components/Sidebar';
 import { ActivityAlertWidget } from '../../components/ActivityAlertWidget';
@@ -25,6 +25,45 @@ import { useAuth } from '../../context/AuthContext';
 import { LAYOUT_SPACING, COLORS, TYPOGRAPHY, SPACING } from '../../design-tokens';
 import { calculateSimulationResults, SimulationResults } from '../../utils/sandboxCalculations';
 
+// Filter-based multiplier for realistic variations
+const getFilterMultiplier = (filters: { region: string; timeFrame: string; material: string }) => {
+  let multiplier = 1;
+
+  const regionMultipliers: Record<string, number> = {
+    'All Regions': 1,
+    'Southeast': 0.28,
+    'Midwest': 0.22,
+    'West Coast': 0.19,
+    'Southwest': 0.15,
+    'Northeast': 0.12,
+    'Mountain': 0.04,
+  };
+
+  const timeMultipliers: Record<string, number> = {
+    'Next 3 Months': 0.25,
+    'Next 6 Months': 0.5,
+    'Next Year': 1,
+    'Last 3 Months': 0.25,
+    'Last 6 Months': 0.5,
+  };
+
+  const materialMultipliers: Record<string, number> = {
+    'All Materials': 1,
+    'Raw Material A': 0.35,
+    'Raw Material B': 0.18,
+    'Component C': 0.12,
+    'Component D': 0.15,
+    'Additive E': 0.08,
+    'Additive F': 0.12,
+  };
+
+  multiplier *= regionMultipliers[filters.region] || 1;
+  multiplier *= timeMultipliers[filters.timeFrame] || 1;
+  multiplier *= materialMultipliers[filters.material] || 1;
+
+  return multiplier;
+};
+
 export default function ManagementForecastPage() {
   const [activeTabId, setActiveTabId] = useState('forecast-vs-actuals');
   const [isSandboxMode, setIsSandboxMode] = useState(false);
@@ -35,16 +74,38 @@ export default function ManagementForecastPage() {
   const [simulationResults, setSimulationResults] = useState<SimulationResults | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [currentFilters, setCurrentFilters] = useState({
+    region: 'All Regions',
+    timeFrame: 'Next 3 Months',
+    material: 'All Materials'
+  });
   const { logout } = useAuth();
 
-  // Handle filter changes - creates visual refresh effect
+  // Handle filter changes - updates state and creates visual refresh effect
   const handleFilterChange = useCallback((filters: { region: string; timeFrame: string; material: string }) => {
     setIsRefreshing(true);
     setTimeout(() => {
+      setCurrentFilters(filters);
       setRefreshKey(prev => prev + 1);
       setIsRefreshing(false);
     }, 300);
   }, []);
+
+  // Calculate dynamic forecast metrics based on filters
+  const dynamicForecastMetrics = useMemo(() => {
+    const mult = getFilterMultiplier(currentFilters);
+    const baseOrdersToShip = 9857;
+    const baseOrdersShipped = 3874;
+    const baseCarryover = 315;
+    const baseForecastAccuracy = 87.5;
+
+    return {
+      ordersToShip: Math.round(baseOrdersToShip * mult),
+      ordersShipped: Math.round(baseOrdersShipped * mult),
+      carryover: Math.round(baseCarryover * mult),
+      forecastAccuracy: (baseForecastAccuracy + (Math.random() - 0.5) * 4).toFixed(1),
+    };
+  }, [currentFilters, refreshKey]);
 
   // Handle toggle change - open modal when turning on
   const handleSandboxToggle = (isOn: boolean) => {
@@ -181,7 +242,7 @@ export default function ManagementForecastPage() {
                           />
 
                           {/* Chart */}
-                          <ForecastChart />
+                          <ForecastChart filters={currentFilters} />
                         </>
                       )}
 
@@ -704,7 +765,7 @@ export default function ManagementForecastPage() {
                       icon="truck"
                       iconBgColor="blue"
                       title="Orders to Ship"
-                      value="$9,857 Tons"
+                      value={`${dynamicForecastMetrics.ordersToShip.toLocaleString()} Tons`}
                       showInfoIcon={true}
                       bulletItems={[
                         { label: 'New Orders', color: 'blue' },
@@ -718,7 +779,7 @@ export default function ManagementForecastPage() {
                       icon="package"
                       iconBgColor="gray"
                       title="Orders Shipped"
-                      value="$3,874 Tons"
+                      value={`${dynamicForecastMetrics.ordersShipped.toLocaleString()} Tons`}
                       showInfoIcon={false}
                       description="Delivered this period"
                     />
@@ -729,7 +790,7 @@ export default function ManagementForecastPage() {
                       icon="git-diff"
                       iconBgColor="black"
                       title="Distributed Carryover"
-                      value="$315 Tons"
+                      value={`${dynamicForecastMetrics.carryover.toLocaleString()} Tons`}
                       showInfoIcon={true}
                       description="Gap redistributed to future periods"
                     />
@@ -740,7 +801,7 @@ export default function ManagementForecastPage() {
                       icon="crosshair"
                       iconBgColor="blue"
                       title="Forecast Accuracy"
-                      value="87.5%"
+                      value={`${dynamicForecastMetrics.forecastAccuracy}%`}
                       showInfoIcon={false}
                       trend={{
                         percentage: '+2.3%',
