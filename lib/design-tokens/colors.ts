@@ -95,11 +95,11 @@ export const success = {
 // Semantic Colors - Warning
 // Signals caution or something that requires user attention.
 export const warning = {
-  100: '#FFF5CC',
-  300: '#E6B800',
-  500: '#C9A700',
-  700: '#8C7500',
-  900: '#5F5600',
+  100: '#FEF3CD',
+  300: '#F59E0B',
+  500: '#D97706',
+  700: '#B45309',
+  900: '#78350F',
 } as const;
 
 // Semantic Colors - Error

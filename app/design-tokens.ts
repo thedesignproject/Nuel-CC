@@ -105,11 +105,11 @@ export const COLORS = {
       500: '#FF3B30',
     },
     warning: {
-      50: 'rgba(255, 245, 204, 0.31)', // Light yellow with opacity
-      100: '#FFF5CC',
-      300: '#FFE066',
-      400: '#FFD400',
-      500: '#C9A700',
+      50: 'rgba(254, 243, 205, 0.31)', // Light amber with opacity
+      100: '#FEF3CD',
+      300: '#F59E0B',
+      400: '#F59E0B',
+      500: '#D97706',
     },
     info: {
       100: '#D6EDFF',
