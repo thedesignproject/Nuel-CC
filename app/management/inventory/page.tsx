@@ -17,7 +17,7 @@ export default function ManagementInventoryPage() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [currentFilters, setCurrentFilters] = useState({
     region: 'All Regions',
-    timeFrame: 'Next 3 Months',
+    timeFrame: 'Last 3 Months',
     material: 'All Materials'
   });
   const { logout } = useAuth();
@@ -90,7 +90,7 @@ export default function ManagementInventoryPage() {
                 }}
               >
                 <InventoryAlerts filters={currentFilters} />
-                <InteractiveInventoryMapWrapper />
+                <InteractiveInventoryMapWrapper filters={currentFilters} />
               </div>
 
               {/* Regional Targets Section */}

@@ -3,7 +3,6 @@
 import React, { useState, useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
-import { Dropdown } from './Dropdown';
 import { MapPin, ArrowsOut, Crosshair } from '@phosphor-icons/react';
 import { warning } from '../../lib/design-tokens/colors';
 import { plantLocations, getStatusColor, PlantLocation } from '../data/plantLocations';
@@ -12,6 +11,11 @@ import 'leaflet/dist/leaflet.css';
 
 export interface InteractiveInventoryMapProps {
   className?: string;
+  filters?: {
+    region: string;
+    timeFrame: string;
+    material: string;
+  };
 }
 
 // Fix for default marker icons in Leaflet
@@ -65,36 +69,20 @@ const MapController = ({ onResetView }: { onResetView: boolean }) => {
  * Supports unlimited zoom in/out, pan, and hover interactions
  */
 export const InteractiveInventoryMap = React.forwardRef<HTMLDivElement, InteractiveInventoryMapProps>(
-  ({ className }, ref) => {
+  ({ className, filters }, ref) => {
     const [hoveredFacility, setHoveredFacility] = useState<PlantLocation | null>(null);
     const [resetView, setResetView] = useState(false);
 
-    // Dropdown states
-    const [selectedMaterial, setSelectedMaterial] = useState('All materials');
-    const [selectedFacility, setSelectedFacility] = useState('All facilities');
-
-    const materialOptions = [
-      { value: 'All materials', label: 'All materials' },
-      { value: 'KMS', label: 'KMS' },
-      { value: 'KTS', label: 'KTS' },
-      { value: 'Thio-Sul', label: 'Thio-Sul' },
-    ];
-
-    const facilityOptions = [
-      { value: 'All facilities', label: 'All facilities' },
-      { value: 'Plants only', label: 'Plants only' },
-      { value: 'Terminals only', label: 'Terminals only' },
-    ];
-
-    // Filter plants based on selected facility type
+    // Filter plants based on page-level filters (region)
     const filteredPlants = useMemo(() => {
-      if (selectedFacility === 'Plants only') {
-        return plantLocations.filter(p => p.type === 'Plant');
-      } else if (selectedFacility === 'Terminals only') {
-        return plantLocations.filter(p => p.type === 'Terminal');
+      let plants = plantLocations;
+
+      if (filters && filters.region !== 'All Regions') {
+        plants = plants.filter(p => p.region === filters.region);
       }
-      return plantLocations;
-    }, [selectedFacility]);
+
+      return plants;
+    }, [filters]);
 
     const handleResetView = () => {
       setResetView(true);
@@ -118,9 +106,9 @@ export const InteractiveInventoryMap = React.forwardRef<HTMLDivElement, Interact
           position: 'relative',
         }}
       >
-        {/* Section Header with Dropdowns */}
+        {/* Section Header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '24px', width: '100%', position: 'relative', zIndex: 1000 }}>
-          {/* Left: Title Section */}
+          {/* Title Section */}
           <div style={{ display: 'flex', gap: '8px', flex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'start', paddingTop: '3px' }}>
               <MapPin size={24} weight="regular" className="text-[#1C58F7]" />
@@ -129,25 +117,12 @@ export const InteractiveInventoryMap = React.forwardRef<HTMLDivElement, Interact
               <h2 style={{ fontFamily: 'DM Sans', fontSize: '24px', lineHeight: '30px', fontWeight: 600, color: '#17263D' }}>
                 Inventory Map
               </h2>
+              {filters && filters.region !== 'All Regions' && (
+                <p style={{ fontFamily: 'DM Sans', fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: '#7F8FA4' }}>
+                  Showing {filters.region} region
+                </p>
+              )}
             </div>
-          </div>
-
-          {/* Right: Dropdowns */}
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <Dropdown
-              value={selectedMaterial}
-              options={materialOptions}
-              onChange={setSelectedMaterial}
-              variant="secondary"
-              width="160px"
-            />
-            <Dropdown
-              value={selectedFacility}
-              options={facilityOptions}
-              onChange={setSelectedFacility}
-              variant="secondary"
-              width="160px"
-            />
           </div>
         </div>
 

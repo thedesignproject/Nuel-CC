@@ -56,7 +56,7 @@ export const TopBar = React.forwardRef<HTMLDivElement, TopBarProps>(
 
     // Selected values
     const [selectedRegion, setSelectedRegion] = useState('All Regions');
-    const [selectedTimeFrame, setSelectedTimeFrame] = useState('Next 3 Months');
+    const [selectedTimeFrame, setSelectedTimeFrame] = useState('Last 3 Months');
     const [selectedMaterial, setSelectedMaterial] = useState('All Materials');
 
     // US Beverage Industry Regions
@@ -71,11 +71,9 @@ export const TopBar = React.forwardRef<HTMLDivElement, TopBarProps>(
     ];
 
     const timeFrameOptions: DropdownOption[] = [
-      { value: 'Next 3 Months', label: 'Next 3 Months' },
-      { value: 'Next 6 Months', label: 'Next 6 Months' },
-      { value: 'Next Year', label: 'Next Year' },
       { value: 'Last 3 Months', label: 'Last 3 Months' },
       { value: 'Last 6 Months', label: 'Last 6 Months' },
+      { value: 'Last Year', label: 'Last Year' },
     ];
 
     // Generic Material Categories

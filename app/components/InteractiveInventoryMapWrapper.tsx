@@ -35,11 +35,16 @@ const InteractiveInventoryMapDynamic = dynamic(
 
 export interface InteractiveInventoryMapWrapperProps {
   className?: string;
+  filters?: {
+    region: string;
+    timeFrame: string;
+    material: string;
+  };
 }
 
 export const InteractiveInventoryMapWrapper = React.forwardRef<HTMLDivElement, InteractiveInventoryMapWrapperProps>(
-  ({ className }, ref) => {
-    return <InteractiveInventoryMapDynamic ref={ref} className={className} />;
+  ({ className, filters }, ref) => {
+    return <InteractiveInventoryMapDynamic ref={ref} className={className} filters={filters} />;
   }
 );
 

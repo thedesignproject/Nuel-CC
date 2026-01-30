@@ -24,11 +24,9 @@ const getFilterMultiplier = (filters: { region: string; timeFrame: string; mater
   };
 
   const timeMultipliers: Record<string, number> = {
-    'Next 3 Months': 0.25,
-    'Next 6 Months': 0.5,
-    'Next Year': 1,
     'Last 3 Months': 0.25,
     'Last 6 Months': 0.5,
+    'Last Year': 1,
   };
 
   multiplier *= regionMultipliers[filters.region] || 1;
@@ -43,7 +41,7 @@ export default function ManagementGapsPage() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [currentFilters, setCurrentFilters] = useState({
     region: 'All Regions',
-    timeFrame: 'Next 3 Months',
+    timeFrame: 'Last 3 Months',
     material: 'All Materials'
   });
   const { logout } = useAuth();

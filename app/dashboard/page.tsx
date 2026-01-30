@@ -35,11 +35,9 @@ const getFilterMultiplier = (filters: { region: string; timeFrame: string; mater
 
   // Time frame multipliers
   const timeMultipliers: Record<string, number> = {
-    'Next 3 Months': 0.25,
-    'Next 6 Months': 0.5,
-    'Next Year': 1,
     'Last 3 Months': 0.25,
     'Last 6 Months': 0.5,
+    'Last Year': 1,
   };
 
   // Material multipliers
@@ -67,7 +65,7 @@ export default function DashboardPage() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [currentFilters, setCurrentFilters] = useState({
     region: 'All Regions',
-    timeFrame: 'Next 3 Months',
+    timeFrame: 'Last 3 Months',
     material: 'All Materials'
   });
   const { logout } = useAuth();
@@ -117,7 +115,7 @@ export default function DashboardPage() {
 
     return filteredData.map(d => ({
       ...d,
-      volume: Math.round(d.volume * (currentFilters.region === 'All Regions' ? 1 : 1) * (currentFilters.timeFrame === 'Next Year' ? 4 : currentFilters.timeFrame.includes('6') ? 2 : 1)),
+      volume: Math.round(d.volume * (currentFilters.region === 'All Regions' ? 1 : 1) * (currentFilters.timeFrame === 'Last Year' ? 4 : currentFilters.timeFrame.includes('6') ? 2 : 1)),
       savings: Math.round(d.savings * mult * 4),
     }));
   }, [currentFilters, refreshKey]);
